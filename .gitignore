@@ -1,0 +1,11 @@
+node_modules
+.env
+.env.*
+build
+dist
+uploads
+*.log
+.vscode
+frontend/node_modules
+backend/node_modules
+frontend/build
