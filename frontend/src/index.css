@@ -2,29 +2,112 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ===============================
+   BASE STYLES
+================================ */
 @layer base {
   body {
     @apply bg-ivory-white text-charcoal font-sans;
   }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    @apply font-bold text-royal-blue;
+  }
+
+  p {
+    @apply text-charcoal leading-relaxed;
+  }
+
+  a {
+    @apply transition-colors;
+  }
 }
 
+/* ===============================
+   COMPONENT STYLES
+================================ */
 @layer components {
+  /* ---------- Buttons ---------- */
+
   .btn-primary {
     @apply bg-soft-gold text-royal-blue font-bold px-6 py-3 rounded hover:brightness-110 transition-all;
   }
+
   .btn-secondary {
     @apply border-2 border-soft-gold text-soft-gold px-6 py-3 rounded hover:bg-soft-gold hover:text-royal-blue transition-all;
   }
+
   .btn-outline {
     @apply border border-royal-blue text-royal-blue px-4 py-2 rounded hover:bg-royal-blue hover:text-white transition-all;
   }
+
+  /* ---------- Cards ---------- */
+
   .card {
     @apply bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow;
   }
+
+  /* ---------- Section Titles ---------- */
+
   .section-title {
     @apply text-3xl font-bold text-royal-blue mb-2;
   }
+
   .section-subtitle {
     @apply text-teal-accent text-lg mb-8;
+  }
+
+  /* ---------- Header / Navbar ---------- */
+
+  .header-logo {
+    @apply h-10 w-auto object-contain;
+  }
+
+  .nav-link {
+    @apply text-white text-sm font-medium hover:text-soft-gold transition-colors;
+  }
+
+  .nav-link-active {
+    @apply text-soft-gold;
+  }
+
+  /* ---------- Layout Containers ---------- */
+
+  .container-main {
+    @apply max-w-7xl mx-auto px-4;
+  }
+
+  .section {
+    @apply py-16;
+  }
+
+  /* ---------- Hero Section ---------- */
+
+  .hero-title {
+    @apply text-4xl md:text-5xl font-bold text-royal-blue mb-6;
+  }
+
+  .hero-subtitle {
+    @apply text-lg text-charcoal mb-8;
+  }
+
+  /* ---------- Footer ---------- */
+
+  .footer {
+    @apply bg-royal-blue text-white py-10 mt-20;
+  }
+
+  .footer-link {
+    @apply text-gray-300 hover:text-soft-gold text-sm transition-colors;
+  }
+
+  /* ---------- Logo Responsive ---------- */
+
+  .logo {
+    @apply h-10 md:h-12 w-auto;
   }
 }
