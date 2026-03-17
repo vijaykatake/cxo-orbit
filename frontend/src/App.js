@@ -9,6 +9,7 @@ import AdminLayout from "./components/layout/AdminLayout";
 // Public Pages
 import HomePage from "./pages/public/HomePage";
 import EventsPage from "./pages/public/EventsPage";
+import AboutPage from "./pages/public/AboutPage";
 
 // Portal Pages
 import MemberLoginPage from "./pages/portal/MemberLoginPage";
@@ -20,21 +21,25 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 // ─── Protected Route ──────────────────────────────────────
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
   const { user, loading } = useAuth();
+
   if (loading)
     return (
       <div className="flex items-center justify-center h-screen text-royal-blue">
         Loading...
       </div>
     );
+
   if (!user)
     return (
-      <Navigate to={requireAdmin ? "/admin/login" : "/portal/login1"} replace />
+      <Navigate to={requireAdmin ? "/admin/login" : "/portal/login"} replace />
     );
+
   if (
     requireAdmin &&
     !["super_admin", "admin", "content_manager", "finance"].includes(user.role)
   )
     return <Navigate to="/" replace />;
+
   return children;
 };
 
@@ -50,6 +55,7 @@ function AppRoutes() {
   return (
     <Routes>
       {/* ── Public ──────────────────────────────── */}
+
       <Route
         path="/"
         element={
@@ -58,6 +64,7 @@ function AppRoutes() {
           </Layout>
         }
       />
+
       <Route
         path="/events"
         element={
@@ -66,6 +73,7 @@ function AppRoutes() {
           </Layout>
         }
       />
+
       <Route
         path="/events/:slug"
         element={
@@ -74,14 +82,17 @@ function AppRoutes() {
           </Layout>
         }
       />
+
+      {/* ABOUT PAGE */}
       <Route
         path="/about"
         element={
           <Layout>
-            <Placeholder title="About CXO Orbit Global" />
+            <AboutPage />
           </Layout>
         }
       />
+
       <Route
         path="/community"
         element={
@@ -90,6 +101,7 @@ function AppRoutes() {
           </Layout>
         }
       />
+
       <Route
         path="/advisory-board"
         element={
@@ -98,6 +110,7 @@ function AppRoutes() {
           </Layout>
         }
       />
+
       <Route
         path="/sponsors"
         element={
@@ -106,6 +119,7 @@ function AppRoutes() {
           </Layout>
         }
       />
+
       <Route
         path="/partners"
         element={
@@ -114,6 +128,7 @@ function AppRoutes() {
           </Layout>
         }
       />
+
       <Route
         path="/insights"
         element={
@@ -122,6 +137,7 @@ function AppRoutes() {
           </Layout>
         }
       />
+
       <Route
         path="/contact"
         element={
@@ -130,6 +146,7 @@ function AppRoutes() {
           </Layout>
         }
       />
+
       <Route
         path="/privacy"
         element={
@@ -138,6 +155,7 @@ function AppRoutes() {
           </Layout>
         }
       />
+
       <Route
         path="/terms"
         element={
@@ -148,7 +166,9 @@ function AppRoutes() {
       />
 
       {/* ── Member Portal ────────────────────────── */}
+
       <Route path="/portal/login" element={<MemberLoginPage />} />
+
       <Route
         path="/portal/dashboard"
         element={
@@ -161,11 +181,14 @@ function AppRoutes() {
       />
 
       {/* ── Admin Panel ──────────────────────────── */}
+
       <Route path="/admin/login" element={<AdminLoginPage />} />
+
       <Route
         path="/admin"
         element={<Navigate to="/admin/dashboard" replace />}
       />
+
       <Route
         path="/admin/dashboard"
         element={
@@ -176,6 +199,7 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+
       <Route
         path="/admin/events"
         element={
@@ -186,6 +210,7 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+
       <Route
         path="/admin/users"
         element={
@@ -196,6 +221,7 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+
       <Route
         path="/admin/sponsors"
         element={
@@ -206,6 +232,7 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+
       <Route
         path="/admin/cms"
         element={
@@ -216,6 +243,7 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+
       <Route
         path="/admin/emails"
         element={
@@ -228,6 +256,7 @@ function AppRoutes() {
       />
 
       {/* 404 */}
+
       <Route
         path="*"
         element={
