@@ -7,7 +7,7 @@ import logo from "../../assets/COX_Logo01.jpeg";
 const navLinks = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About" },
-  { to: "/events", label: "Events" },
+  { to: "/events", label: "Conferences & Events" },
   { to: "/community", label: "CXO Community" },
   { to: "/sponsors", label: "Sponsors" },
   { to: "/insights", label: "Insights" },

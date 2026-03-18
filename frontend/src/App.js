@@ -47,7 +47,7 @@ const ProtectedRoute = ({ children, requireAdmin = false }) => {
 const Placeholder = ({ title }) => (
   <div className="max-w-4xl mx-auto px-4 py-16 text-center">
     <h1 className="section-title">{title}</h1>
-    <p className="text-gray-500 mt-4">This page is under construction.</p>
+    <p className="text-gray-500 mt-4"></p>
   </div>
 );
 
