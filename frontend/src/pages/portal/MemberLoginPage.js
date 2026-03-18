@@ -20,7 +20,7 @@ export default function MemberLoginPage() {
     try {
       // NOTE: This should be using /auth/member/otp or /auth/member/login endpoint
       // Currently it's using admin login - update this based on your member auth flow
-      const res = await api.post("/auth/member/login", data);
+      const res = await api.post("/auth/otp/request", { email });
       login(res.data.token, res.data.user);
       toast.success("Logged in successfully!");
 

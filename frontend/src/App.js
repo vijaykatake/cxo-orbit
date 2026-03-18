@@ -10,7 +10,7 @@ import AdminLayout from "./components/layout/AdminLayout";
 import HomePage from "./pages/public/HomePage";
 import EventsPage from "./pages/public/EventsPage";
 import AboutPage from "./pages/public/AboutPage";
-
+import CommunityPage from "./pages/public/CommunityPage";
 // Portal Pages
 import MemberLoginPage from "./pages/portal/MemberLoginPage";
 
@@ -97,7 +97,7 @@ function AppRoutes() {
         path="/community"
         element={
           <Layout>
-            <Placeholder title="CXO Community" />
+            <CommunityPage />
           </Layout>
         }
       />
