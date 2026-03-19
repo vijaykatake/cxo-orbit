@@ -6,6 +6,7 @@ const {
   verifyOTP,
   getMe,
   registerMember,
+  memberLogin, // ✅ ADD THIS
 } = require("../controllers/authController");
 
 const { authenticate } = require("../middleware/authMiddleware");
@@ -45,7 +46,10 @@ router.post("/admin/login", adminLogin);
 // Member Registration
 // ─────────────────────────────────────────────
 router.post("/register-member", registerLimiter, registerMember);
-
+// ─────────────────────────────────────────────
+// Member Login (Password Based)
+// ─────────────────────────────────────────────
+router.post("/member-login", memberLogin);
 // ─────────────────────────────────────────────
 // Member OTP Login
 // ─────────────────────────────────────────────

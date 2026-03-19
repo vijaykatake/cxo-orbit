@@ -14,11 +14,10 @@ import CommunityPage from "./pages/public/CommunityPage";
 import AdvisoryBoardPage from "./pages/public/AdvisoryBoardPage";
 // Portal Pages
 import MemberLoginPage from "./pages/portal/MemberLoginPage";
-
 // Admin Pages
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
-
+import MemberDashboard from "./pages/portal/MemberDashboard";
 // ─── Protected Route ──────────────────────────────────────
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
   const { user, loading } = useAuth();
@@ -168,7 +167,14 @@ function AppRoutes() {
 
       {/* ── Member Portal ────────────────────────── */}
 
-      <Route path="/portal/login" element={<MemberLoginPage />} />
+      <Route
+        path="/portal/login"
+        element={
+          <Layout>
+            <MemberLoginPage />
+          </Layout>
+        }
+      />
 
       <Route
         path="/portal/dashboard"
@@ -200,7 +206,16 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-
+      <Route
+        path="/portal/dashboard"
+        element={
+          <ProtectedRoute>
+            <Layout>
+              <MemberDashboard />
+            </Layout>
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/admin/events"
         element={

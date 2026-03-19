@@ -1,103 +1,79 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { useState, useEffect } from "react";
 import api from "../../api";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 
 export default function MemberLoginPage() {
-  const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
   const navigate = useNavigate();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { login, user } = useAuth(); // ✅ ADD THIS
 
-  const onSubmit = async (data) => {
-    setLoading(true);
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleLogin = async () => {
+    if (!form.email || !form.password) {
+      alert("Email and password required");
+      return;
+    }
+
     try {
-      // NOTE: This should be using /auth/member/otp or /auth/member/login endpoint
-      // Currently it's using admin login - update this based on your member auth flow
-      const res = await api.post("/auth/otp/request", { email });
-      login(res.data.token, res.data.user);
-      toast.success("Logged in successfully!");
+      setLoading(true);
 
-      // FIX: Redirect to portal dashboard, not admin dashboard
-      navigate("/portal/dashboard", { replace: true });
+      const res = await api.post("/auth/member-login", form);
+
+      // ✅ USE CONTEXT LOGIN
+      login(res.data.token, res.data.user);
     } catch (err) {
-      toast.error(err.response?.data?.message || "Login failed");
+      alert(err.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
   };
 
+  // ✅ HANDLE NAVIGATION AFTER USER SET
+  useEffect(() => {
+    if (user) {
+      navigate("/portal/dashboard");
+    }
+  }, [user, navigate]);
+
   return (
-    <div className="min-h-screen bg-royal-blue flex items-center justify-center px-4">
-      <div className="bg-white rounded-xl shadow-xl p-8 w-full max-w-md">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-royal-blue font-bold text-2xl">
-            CXO Orbit Global
-          </h1>
-          <p className="text-gray-500 text-sm mt-1">Member Portal Login</p>
-        </div>
+    <div className="flex items-center justify-center min-h-[80vh] px-4">
+      <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
+        <h2 className="text-2xl font-bold text-royal-blue mb-6 text-center">
+          Member Login
+        </h2>
 
-        {/* Login Form */}
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {/* Email Field */}
-          <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
-            <input
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^\S+@\S+$/i,
-                  message: "Invalid email address",
-                },
-              })}
-              type="email"
-              className="w-full border rounded px-4 py-2.5 text-sm focus:outline-none focus:border-royal-blue"
-              placeholder="Enter your email"
-            />
-            {errors.email && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
+        <input
+          name="email"
+          placeholder="Email"
+          className="border p-2 rounded w-full mb-4"
+          onChange={handleChange}
+        />
 
-          {/* Password Field */}
-          <div>
-            <label className="block text-sm font-medium mb-1">Password</label>
-            <input
-              {...register("password", { required: "Password is required" })}
-              type="password"
-              className="w-full border rounded px-4 py-2.5 text-sm focus:outline-none focus:border-royal-blue"
-              placeholder="Enter your password"
-            />
-            {errors.password && (
-              <p className="text-red-500 text-xs mt-1">
-                {errors.password.message}
-              </p>
-            )}
-          </div>
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          className="border p-2 rounded w-full mb-6"
+          onChange={handleChange}
+        />
 
-          {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-royal-blue text-white w-full py-3 rounded font-medium hover:bg-opacity-90 transition disabled:opacity-60 disabled:cursor-not-allowed"
-          >
-            {loading ? "Logging in..." : "Login"}
-          </button>
-        </form>
-
-        {/* Footer Note */}
-        <p className="text-xs text-gray-400 text-center mt-6">
-          Member access portal
-        </p>
+        <button
+          onClick={handleLogin}
+          className="btn-primary w-full"
+          disabled={loading}
+        >
+          {loading ? "Logging in..." : "Login"}
+        </button>
       </div>
     </div>
   );
