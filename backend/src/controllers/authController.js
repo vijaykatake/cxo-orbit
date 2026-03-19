@@ -192,10 +192,12 @@ const getMe = async (req, res) => {
 };
 
 // ─────────────────────────────────────────────
-// Member Registration (CXO Onboarding)
+// Member Registration (UPDATED WITH PASSWORD)
 // ─────────────────────────────────────────────
 const registerMember = async (req, res) => {
   try {
+    delete req.body.confirmPassword;
+    console.log("REQ BODY:", req.body); // ✅ ADD HERE
     const {
       firstName,
       lastName,
@@ -211,12 +213,19 @@ const registerMember = async (req, res) => {
       country,
       state,
       city,
+      password, // ✅ NEW
     } = req.body;
 
-    if (!firstName || !lastName || !personalEmail)
+    if (!firstName || !lastName || !personalEmail || !password)
       return res.status(400).json({
         success: false,
-        message: "First name, last name and personal email are required",
+        message: "First name, last name, email and password are required",
+      });
+
+    if (password.length < 5)
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 5 characters",
       });
 
     const existing = await User.findOne({
@@ -229,10 +238,16 @@ const registerMember = async (req, res) => {
         message: "Email already registered",
       });
 
+    // 🔐 HASH PASSWORD
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    console.log("HASHED PASSWORD:", hashedPassword); // debug
+
     const user = await User.create({
       firstName,
       lastName,
       email: personalEmail,
+      passwordHash: hashedPassword, // ✅ THIS WAS MISSING
       role: "member",
       isVerified: false,
     });

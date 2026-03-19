@@ -18,6 +18,8 @@ export default function RegisterMemberModal({ open, setOpen }) {
     country: "",
     state: "",
     city: "",
+    password: "",
+    confirmPassword: "",
   });
   const [loading, setLoading] = useState(false);
   const [birthDate, setBirthDate] = useState(null);
@@ -40,11 +42,15 @@ export default function RegisterMemberModal({ open, setOpen }) {
     if (!form.state) return "State is required";
     if (!form.city) return "City is required";
 
+    if (!form.password) return "Password is required";
+    if (form.password.length < 5)
+      return "Password must be at least 5 characters";
+
+    if (form.password !== form.confirmPassword) return "Passwords do not match";
     return null;
   };
   const submitForm = async () => {
     const error = validateForm();
-
     if (error) {
       alert(error);
       return;
@@ -55,10 +61,11 @@ export default function RegisterMemberModal({ open, setOpen }) {
 
       const payload = {
         ...form,
+        password: form.password, // send only password
         birthDate,
         anniversaryDate,
       };
-
+      console.log("PAYLOAD:", payload); // ✅ correct debug
       await api.post("/auth/register-member", payload);
 
       alert("Registration submitted successfully");
@@ -122,7 +129,21 @@ export default function RegisterMemberModal({ open, setOpen }) {
             className="border p-2 rounded"
             onChange={handleChange}
           />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            className="border p-2 rounded"
+            onChange={handleChange}
+          />
 
+          <input
+            type="password"
+            name="confirmPassword"
+            placeholder="Confirm Password"
+            className="border p-2 rounded"
+            onChange={handleChange}
+          />
           <input
             name="mobile"
             placeholder="Mobile Number"
