@@ -11,6 +11,7 @@ import HomePage from "./pages/public/HomePage";
 import EventsPage from "./pages/public/EventsPage";
 import AboutPage from "./pages/public/AboutPage";
 import CommunityPage from "./pages/public/CommunityPage";
+import AdvisoryBoardPage from "./pages/public/AdvisoryBoardPage";
 // Portal Pages
 import MemberLoginPage from "./pages/portal/MemberLoginPage";
 
@@ -106,7 +107,7 @@ function AppRoutes() {
         path="/advisory-board"
         element={
           <Layout>
-            <Placeholder title="Advisory Board" />
+            <AdvisoryBoardPage />
           </Layout>
         }
       />
