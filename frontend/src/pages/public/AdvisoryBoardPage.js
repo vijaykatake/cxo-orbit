@@ -29,16 +29,11 @@ export default function AdvisoryBoardPage() {
 
   return (
     <div>
-      {/* ── Header ───────────────── */}
-      <section className="text-white py-6 text-center">
-        <h1 className="text-3xl font-bold text-soft-gold">Advisory Board</h1>
-      </section>
-
       {/* ── Section Title ───────────────── */}
       <section className="py-4 px-4 max-w-7xl mx-auto">
         <div className="text-center mb-4">
           <h2 className="text-3xl font-bold text-[#0B2C4D] tracking-wide">
-            Strategic Leadership & Guidance
+            Advisory Board
           </h2>
 
           <div className="w-24 h-[2px] bg-[#D4AF37] mx-auto mt-2"></div>
