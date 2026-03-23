@@ -61,11 +61,15 @@ export default function AdvisoryBoardPage() {
             >
               {/* Image */}
               <div className="overflow-hidden">
-                <img
-                  src={member.image}
-                  alt={member.name}
-                  className="w-full aspect-[4/3] object-fill"
-                />
+                <div className="flex justify-center mt-4">
+                  <div className="w-40 h-52 md:w-48 md:h-60 rounded-[50%] overflow-hidden shadow-md ">
+                    <img
+                      src={member.image}
+                      alt={member.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                </div>
               </div>
 
               {/* Content */}
