@@ -35,35 +35,35 @@ router.get("/email-logs", authenticate, adminOnly, async (req, res) => {
 });
 
 // 🔥 TEMP SEED ROUTE (ADD THIS AT BOTTOM)
-router.get("/seed-admin", async (req, res) => {
-  try {
-    const bcrypt = require("bcrypt");
-    const User = require("../models/User");
+// router.get("/seed-admin", async (req, res) => {
+//   try {
+//     const bcrypt = require("bcrypt");
+//     const User = require("../models/User");
 
-    const existing = await User.findOne({
-      where: { email: "admin@cxoorbit.com" },
-    });
+//     const existing = await User.findOne({
+//       where: { email: "admin@cxoorbit.com" },
+//     });
 
-    if (existing) {
-      return res.json({ message: "Admin already exists" });
-    }
+//     if (existing) {
+//       return res.json({ message: "Admin already exists" });
+//     }
 
-    const hashedPassword = await bcrypt.hash("Admin@123", 10);
+//     const hashedPassword = await bcrypt.hash("Admin@123", 10);
 
-    await User.create({
-      email: "admin@cxoorbit.com",
-      passwordHash: hashedPassword,
-      firstName: "Super",
-      lastName: "Admin",
-      role: "admin",
-      isActive: true,
-      isVerified: true,
-    });
+//     await User.create({
+//       email: "admin@cxoorbit.com",
+//       passwordHash: hashedPassword,
+//       firstName: "Super",
+//       lastName: "Admin",
+//       role: "admin",
+//       isActive: true,
+//       isVerified: true,
+//     });
 
-    res.json({ message: "Admin created successfully ✅" });
-  } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
-  }
-});
+//     res.json({ message: "Admin created successfully ✅" });
+//   } catch (err) {
+//     res.status(500).json({ success: false, message: err.message });
+//   }
+// });
 
 module.exports = router;
