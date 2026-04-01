@@ -5,7 +5,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const path = require("path");
 
-const { sequelize } = require("./src/config/database");
+const sequelize = require("./src/config/database");
 
 // Route imports
 const authRoutes = require("./src/routes/authRoutes");

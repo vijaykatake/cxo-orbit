@@ -18,6 +18,10 @@ import MemberLoginPage from "./pages/portal/MemberLoginPage";
 import AdminLoginPage from "./pages/admin/AdminLoginPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import MemberDashboard from "./pages/portal/MemberDashboard";
+// CMS (NEW)
+import AdminLogin from "./cms/pages/AdminLogin";
+import Dashboard from "./cms/pages/Dashboard";
+import ProtectedAdmin from "./cms/routes/ProtectedAdmin";
 // ─── Protected Route ──────────────────────────────────────
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
   const { user, loading } = useAuth();
@@ -176,7 +180,7 @@ function AppRoutes() {
         }
       />
 
-      <Route
+      {/* <Route
         path="/portal/dashboard"
         element={
           <ProtectedRoute>
@@ -185,7 +189,7 @@ function AppRoutes() {
             </Layout>
           </ProtectedRoute>
         }
-      />
+      /> */}
 
       {/* ── Admin Panel ──────────────────────────── */}
 
@@ -270,7 +274,18 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      {/* ── CMS (NEW ADMIN PANEL) ──────────────────────────── */}
 
+      <Route path="/cms/login" element={<AdminLogin />} />
+
+      <Route
+        path="/cms/dashboard"
+        element={
+          <ProtectedAdmin>
+            <Dashboard />
+          </ProtectedAdmin>
+        }
+      />
       {/* 404 */}
 
       <Route
