@@ -1,5 +1,5 @@
  git add .
-git commit -m "Image Oval Style Set."
+git commit -m "Adviosory Board Title Set"
 git push
 
 
@@ -8,3 +8,7 @@ https://www.poulimainfo.tech/?https://poulimainfo.tech/?utm_source=google&utm_me
 
 -- Hosting Link
 https://dashboard.render.com/static/srv-d6rt2v0gjchc73bgik50
+-- Database
+https://railway.com/project/236afa7d-23cb-4aab-8096-efb15fa72f8c/service/cd8751a0-6084-4241-9eb9-5ae6611d3c72/database?environmentId=5041eed5-5245-4d49-b7b2-0b1d72b7aa68
+-- Link
+https://cxo-orbit-frontend.onrender.com
