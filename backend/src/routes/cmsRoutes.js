@@ -4,7 +4,7 @@ const CMSPage = require("../models/CMSPage");
 const { authenticate, staffOrAbove } = require("../middleware/authMiddleware");
 
 // Public: get published page by slug
-router.get("/:slug", async (req, res) => {
+router.get("/page/:slug", async (req, res) => {
   try {
     const page = await CMSPage.findOne({
       where: { slug: req.params.slug, isPublished: true },

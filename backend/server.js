@@ -16,6 +16,7 @@ const partnerRoutes = require("./src/routes/partnerRoutes");
 const adminRoutes = require("./src/routes/adminRoutes");
 const emailRoutes = require("./src/routes/emailRoutes");
 const cmsRoutes = require("./src/routes/cmsRoutes");
+const newsRoutes = require("./src/routes/newsRoutes");
 
 const app = express();
 
@@ -43,7 +44,8 @@ app.use("/api/partners", partnerRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/email", emailRoutes);
 app.use("/api/cms", cmsRoutes);
-
+// ✅ CMS News Page
+app.use("/api", newsRoutes);
 // Health check
 app.get("/api/health", (req, res) => {
   res.json({

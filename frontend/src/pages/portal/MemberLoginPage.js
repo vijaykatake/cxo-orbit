@@ -32,7 +32,7 @@ export default function MemberLoginPage() {
     try {
       setLoading(true);
 
-      const res = await api.post("/api/auth/member-login", form);
+      const res = await api.post("/auth/member-login", form);
 
       login(res.data.token, res.data.user);
     } catch (err) {

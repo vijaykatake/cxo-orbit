@@ -2,29 +2,28 @@ import axios from "axios";
 
 const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
-// ✅ FIX HERE
-const api = axios.create({
+const cmsApi = axios.create({
   baseURL: `${BASE_URL}/api`,
   headers: { "Content-Type": "application/json" },
 });
 
-// Attach JWT token to every request
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("cxo_token"); // ⚠️ check below
+// ✅ Use ADMIN TOKEN
+cmsApi.interceptors.request.use((config) => {
+  const token = localStorage.getItem("adminToken");
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
-// Handle 401 globally
-api.interceptors.response.use(
+// ✅ CMS LOGIN REDIRECT
+cmsApi.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem("cxo_token");
-      window.location.href = "/portal/login";
+      localStorage.removeItem("adminToken");
+      window.location.href = "/#/cms/login"; // ✅ IMPORTANT
     }
     return Promise.reject(error);
   },
 );
 
-export default api;
+export default cmsApi;
