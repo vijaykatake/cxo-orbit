@@ -1,29 +1,42 @@
-import { useEffect, useState } from "react";
-import api from "../services/api";
-import Sidebar from "../components/Sidebar";
+import { useEffect, useState, useRef } from "react";
+import axios from "axios";
+import $ from "jquery";
+import Sidebar from "../components/Sidebar"; // ✅ ADD THIS
+import "datatables.net";
+import "datatables.net-buttons";
+import "datatables.net-buttons/js/buttons.html5";
+import "datatables.net-buttons/js/buttons.print";
+
+import jszip from "jszip";
+import pdfMake from "pdfmake/build/pdfmake";
+import pdfFonts from "pdfmake/build/vfs_fonts";
+
+// Font Awesome
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPlus, faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+
+window.JSZip = jszip;
+pdfMake.vfs = pdfFonts.vfs;
 
 export default function News() {
-  const [newsList, setNewsList] = useState([]);
-  const [form, setForm] = useState({
-    title: "",
-    info: "",
-    date: "",
-    venue: "",
-    address: "",
-    link: "",
-    main_image: "",
-    gallery: [],
-  });
+  const [news, setNews] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editData, setEditData] = useState(null);
 
-  const [editId, setEditId] = useState(null);
+  const tableRef = useRef();
+  const token = localStorage.getItem("adminToken");
 
-  // 🔥 LOAD DATA
+  // =========================
+  // FETCH NEWS
+  // =========================
   const fetchNews = async () => {
     try {
-      const res = await api.get("/cms/news"); // ✅ FIXED
-      setNewsList(res.data);
+      const res = await axios.get("/api/cms/news", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setNews(res.data);
     } catch (err) {
-      console.error("Fetch error:", err);
+      console.error(err);
     }
   };
 
@@ -31,185 +44,205 @@ export default function News() {
     fetchNews();
   }, []);
 
-  // 🔥 HANDLE INPUT
-  const handleChange = (e) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
-  };
-
-  // 🔥 HANDLE GALLERY
-  const handleGallery = (e) => {
-    const images = e.target.value.split(",");
-    setForm({ ...form, gallery: images });
-  };
-
-  // 🔥 SUBMIT
-  const handleSubmit = async () => {
-    try {
-      if (editId) {
-        await api.put(`/cms/news/${editId}`, form); // ✅ FIXED
-      } else {
-        await api.post("/cms/news", form); // ✅ FIXED
+  // =========================
+  // INIT DATATABLE
+  // =========================
+  useEffect(() => {
+    if (news.length > 0) {
+      if ($.fn.DataTable.isDataTable("#newsTable")) {
+        $("#newsTable").DataTable().destroy();
       }
 
-      setForm({
-        title: "",
-        info: "",
-        date: "",
-        venue: "",
-        address: "",
-        link: "",
-        main_image: "",
-        gallery: [],
-      });
-
-      setEditId(null);
-      fetchNews();
-    } catch (err) {
-      console.error("Submit error:", err);
+      setTimeout(() => {
+        $("#newsTable").DataTable({
+          dom: "Bfrtip",
+          buttons: ["copy", "excel", "pdf", "print"],
+        });
+      }, 100);
     }
-  };
+  }, [news]);
 
-  // 🔥 DELETE
+  // =========================
+  // DELETE
+  // =========================
   const handleDelete = async (id) => {
+    if (!window.confirm("Delete this news?")) return;
+
     try {
-      await api.delete(`/cms/news/${id}`); // ✅ FIXED
+      await axios.delete(`/api/cms/news/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       fetchNews();
     } catch (err) {
-      console.error("Delete error:", err);
+      console.error(err);
     }
   };
 
-  // 🔥 EDIT
-  const handleEdit = (item) => {
-    setForm({
-      ...item,
-      gallery: item.gallery?.map((g) => g.image_url) || [],
-    });
-    setEditId(item.id);
+  // =========================
+  // OPEN MODAL
+  // =========================
+  const openAddModal = () => {
+    setEditData(null);
+    setModalOpen(true);
+  };
+
+  const openEditModal = (item) => {
+    setEditData(item);
+    setModalOpen(true);
   };
 
   return (
     <div className="flex min-h-screen bg-gray-100">
+      {/* ✅ SIDEBAR */}
       <Sidebar />
 
-      <div className="flex-1 p-6 grid grid-cols-2 gap-6">
-        {/* LEFT → FORM */}
-        <div className="bg-white p-6 rounded shadow">
-          <h2 className="text-xl font-bold mb-4">
-            {editId ? "Edit News" : "Add News"}
-          </h2>
-
-          <div className="space-y-3">
-            <input
-              name="title"
-              value={form.title}
-              onChange={handleChange}
-              placeholder="Title"
-              className="w-full border p-2 rounded"
-            />
-
-            <textarea
-              name="info"
-              value={form.info}
-              onChange={handleChange}
-              placeholder="Info"
-              className="w-full border p-2 rounded"
-            />
-
-            <input
-              type="date"
-              name="date"
-              value={form.date}
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-            />
-
-            <input
-              name="venue"
-              value={form.venue}
-              onChange={handleChange}
-              placeholder="Venue"
-              className="w-full border p-2 rounded"
-            />
-
-            <textarea
-              name="address"
-              value={form.address}
-              onChange={handleChange}
-              placeholder="Address"
-              className="w-full border p-2 rounded"
-            />
-
-            <input
-              name="link"
-              value={form.link}
-              onChange={handleChange}
-              placeholder="Link (optional)"
-              className="w-full border p-2 rounded"
-            />
-
-            <input
-              name="main_image"
-              value={form.main_image}
-              onChange={handleChange}
-              placeholder="Main Image URL"
-              className="w-full border p-2 rounded"
-            />
-
-            <input
-              onChange={handleGallery}
-              placeholder="Gallery (comma separated URLs)"
-              className="w-full border p-2 rounded"
-            />
-
-            <button
-              onClick={handleSubmit}
-              className="bg-blue-600 text-white px-4 py-2 rounded w-full"
-            >
-              {editId ? "Update" : "Create"}
-            </button>
-          </div>
+      {/* ✅ MAIN CONTENT */}
+      <div className="flex-1 p-6">
+        {/* TOP BAR */}
+        <div className="flex justify-end mb-4">
+          <button
+            onClick={openAddModal}
+            className="bg-black text-white px-4 py-2 rounded-lg flex items-center gap-2"
+          >
+            <FontAwesomeIcon icon={faPlus} />
+            Add New
+          </button>
         </div>
 
-        {/* RIGHT → TABLE */}
-        <div className="bg-white p-6 rounded shadow">
-          <h2 className="text-xl font-bold mb-4">News List</h2>
-
-          <table className="w-full text-sm">
+        {/* TABLE */}
+        <div className="bg-white p-4 rounded-xl shadow">
+          <table id="newsTable" className="display w-full">
             <thead>
-              <tr className="border-b">
+              <tr>
                 <th>Title</th>
+                <th>Info</th>
                 <th>Date</th>
                 <th>Venue</th>
-                <th>Actions</th>
+                <th>Action</th>
               </tr>
             </thead>
 
             <tbody>
-              {newsList.map((item) => (
-                <tr key={item.id} className="border-b">
+              {news.map((item) => (
+                <tr key={item.id}>
                   <td>{item.title}</td>
+                  <td>{item.info}</td>
                   <td>{item.date?.split("T")[0]}</td>
                   <td>{item.venue}</td>
 
-                  <td className="space-x-2">
+                  <td className="flex gap-2">
                     <button
-                      onClick={() => handleEdit(item)}
+                      onClick={() => openEditModal(item)}
                       className="text-blue-600"
                     >
-                      Edit
+                      <FontAwesomeIcon icon={faEdit} />
                     </button>
+
                     <button
                       onClick={() => handleDelete(item.id)}
                       className="text-red-600"
                     >
-                      Delete
+                      <FontAwesomeIcon icon={faTrash} />
                     </button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* MODAL */}
+        {modalOpen && (
+          <NewsModal
+            data={editData}
+            onClose={() => setModalOpen(false)}
+            fetchNews={fetchNews}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+// =========================
+// MODAL COMPONENT
+// =========================
+function NewsModal({ data, onClose, fetchNews }) {
+  const [title, setTitle] = useState(data ? data.title : "");
+  const [description, setDescription] = useState(data ? data.description : "");
+
+  const token = localStorage.getItem("adminToken");
+
+  const isEdit = !!data;
+
+  const handleSubmit = async () => {
+    try {
+      if (isEdit) {
+        await axios.put(
+          `/api/cms/news/${data.id}`,
+          {
+            title,
+            description,
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+      } else {
+        await axios.post(
+          "/api/cms/news",
+          {
+            title,
+            description,
+          },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+      }
+
+      fetchNews();
+      onClose();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white w-full max-w-lg rounded-xl p-6 space-y-4">
+        {/* HEADER */}
+        <div className="flex justify-between items-center">
+          <h2 className="text-lg font-bold">
+            {isEdit ? `Edit: ${data.title}` : "Add News"}
+          </h2>
+          <button onClick={onClose}>✖</button>
+        </div>
+
+        {/* FORM */}
+        <input
+          className="w-full border p-2 rounded"
+          placeholder="Title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+
+        <textarea
+          className="w-full border p-2 rounded"
+          placeholder="Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
+
+        {/* ACTION */}
+        <div className="flex justify-end gap-2">
+          <button onClick={onClose}>Cancel</button>
+          <button
+            onClick={handleSubmit}
+            className="bg-black text-white px-4 py-2 rounded"
+          >
+            {isEdit ? "Update" : "Create"}
+          </button>
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
  git add .
-git commit -m "News And Profile Page Added."
+git commit -m "CMS News Page Uploded."
 git push
 
 
