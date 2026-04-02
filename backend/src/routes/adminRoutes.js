@@ -5,6 +5,7 @@ const {
   createAdminUser,
   inviteMember,
   toggleUserStatus,
+  loginAdmin, // ✅ CMS Admin
 } = require("../controllers/adminController");
 
 const {
@@ -14,13 +15,13 @@ const {
 } = require("../middleware/authMiddleware");
 
 const EmailLog = require("../models/EmailLog");
-
+// ✅ CMS Login
+router.post("/login", loginAdmin);
 // ✅ EXISTING ROUTES
 router.get("/users", authenticate, adminOnly, getAllUsers);
 router.post("/users/admin", authenticate, superAdminOnly, createAdminUser);
 router.post("/users/invite", authenticate, adminOnly, inviteMember);
 router.patch("/users/:id/toggle", authenticate, adminOnly, toggleUserStatus);
-
 // Email logs
 router.get("/email-logs", authenticate, adminOnly, async (req, res) => {
   try {

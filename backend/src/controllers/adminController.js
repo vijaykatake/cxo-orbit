@@ -1,14 +1,14 @@
-const bcrypt = require('bcryptjs');
-const { v4: uuidv4 } = require('uuid');
-const User = require('../models/User');
-const { sendEmail } = require('../services/emailService');
+const bcrypt = require("bcryptjs");
+const { v4: uuidv4 } = require("uuid");
+const User = require("../models/User");
+const { sendEmail } = require("../services/emailService");
 
 // ─── Get All Users ────────────────────────────────────────
 const getAllUsers = async (req, res) => {
   try {
     const users = await User.unscoped().findAll({
-      attributes: { exclude: ['passwordHash', 'otpCode', 'otpExpiresAt'] },
-      order: [['createdAt', 'DESC']],
+      attributes: { exclude: ["passwordHash", "otpCode", "otpExpiresAt"] },
+      order: [["createdAt", "DESC"]],
     });
     res.json({ success: true, data: users });
   } catch (err) {
@@ -21,39 +21,125 @@ const createAdminUser = async (req, res) => {
   try {
     const { email, firstName, lastName, role, password } = req.body;
     const exists = await User.unscoped().findOne({ where: { email } });
-    if (exists) return res.status(409).json({ success: false, message: 'Email already exists' });
+    if (exists)
+      return res
+        .status(409)
+        .json({ success: false, message: "Email already exists" });
 
     const passwordHash = await bcrypt.hash(password, 12);
     const user = await User.create({
-      id: uuidv4(), email, firstName, lastName, role, passwordHash,
-      isActive: true, isVerified: true,
+      id: uuidv4(),
+      email,
+      firstName,
+      lastName,
+      role,
+      passwordHash,
+      isActive: true,
+      isVerified: true,
     });
 
     res.status(201).json({
       success: true,
-      data: { id: user.id, email: user.email, firstName: user.firstName, role: user.role },
+      data: {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        role: user.role,
+      },
     });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+// ─── Admin Login ─────────────────────────────────────────
+const jwt = require("jsonwebtoken");
 
+const loginAdmin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // 1. Find user
+    const user = await User.unscoped().findOne({ where: { email } });
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email",
+      });
+    }
+
+    // 2. Check role (IMPORTANT: only admin allowed)
+    if (user.role !== "admin") {
+      return res.status(403).json({
+        success: false,
+        message: "Access denied",
+      });
+    }
+
+    // 3. Compare password
+    const isMatch = await bcrypt.compare(password, user.passwordHash);
+
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid password",
+      });
+    }
+
+    // 4. Generate JWT
+    const token = jwt.sign(
+      {
+        id: user.id,
+        role: user.role,
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" },
+    );
+
+    // 5. Send response
+    res.json({
+      success: true,
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
 // ─── Invite CXO Member ────────────────────────────────────
 const inviteMember = async (req, res) => {
   try {
     const { email, firstName, lastName, phone } = req.body;
     const exists = await User.unscoped().findOne({ where: { email } });
-    if (exists) return res.status(409).json({ success: false, message: 'Email already exists' });
+    if (exists)
+      return res
+        .status(409)
+        .json({ success: false, message: "Email already exists" });
 
     const user = await User.create({
-      id: uuidv4(), email, firstName, lastName, phone,
-      role: 'member', isActive: true, isVerified: false,
+      id: uuidv4(),
+      email,
+      firstName,
+      lastName,
+      phone,
+      role: "member",
+      isActive: true,
+      isVerified: false,
     });
 
     // Send invite email
     await sendEmail({
-      to: email, templateType: 'member_invite', relatedId: user.id,
-      subject: 'You are invited to CXO Orbit Global',
+      to: email,
+      templateType: "member_invite",
+      relatedId: user.id,
+      subject: "You are invited to CXO Orbit Global",
       html: `
         <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;">
           <div style="background:#0B2C4D;padding:24px;text-align:center;">
@@ -76,7 +162,11 @@ const inviteMember = async (req, res) => {
     // Mark as verified after invite
     await user.update({ isVerified: true });
 
-    res.status(201).json({ success: true, message: 'Member invited successfully', data: { id: user.id, email } });
+    res.status(201).json({
+      success: true,
+      message: "Member invited successfully",
+      data: { id: user.id, email },
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -86,12 +176,24 @@ const inviteMember = async (req, res) => {
 const toggleUserStatus = async (req, res) => {
   try {
     const user = await User.findByPk(req.params.id);
-    if (!user) return res.status(404).json({ success: false, message: 'User not found' });
+    if (!user)
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
     await user.update({ isActive: !user.isActive });
-    res.json({ success: true, message: `User ${user.isActive ? 'activated' : 'deactivated'}` });
+    res.json({
+      success: true,
+      message: `User ${user.isActive ? "activated" : "deactivated"}`,
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 };
 
-module.exports = { getAllUsers, createAdminUser, inviteMember, toggleUserStatus };
+module.exports = {
+  getAllUsers,
+  createAdminUser,
+  inviteMember,
+  toggleUserStatus,
+  loginAdmin, // ✅ CMS Admin
+};

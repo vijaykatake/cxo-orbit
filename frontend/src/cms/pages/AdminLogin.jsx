@@ -1,24 +1,44 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { API } from "../../config/api";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 export default function AdminLogin() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const isLocal = window.location.hostname === "localhost";
+
+  const [email, setEmail] = useState(isLocal ? "admin@cxoorbit.com" : "");
+  const [password, setPassword] = useState(isLocal ? "Admin@123" : "");
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
 
+    if (!email || !password) {
+      alert("Please enter email & password");
+      return;
+    }
+
     try {
-      const res = await axios.post(
-        "http://localhost:5000/api/admin/login", // adjust if needed
-        { email, password },
-      );
+      setLoading(true);
+
+      const res = await axios.post(`${API.admin}/login`, {
+        email,
+        password,
+      });
 
       localStorage.setItem("adminToken", res.data.token);
 
-      window.location.href = "/cms/dashboard";
+      navigate("/cms/dashboard");
     } catch (err) {
-      alert("Login failed ❌");
+      console.error(err);
+      alert(err.response?.data?.message || "Login failed ❌");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -34,18 +54,39 @@ export default function AdminLogin() {
           type="email"
           placeholder="Email"
           className="w-full mb-3 p-2 border rounded"
+          value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
 
-        <input
-          type="password"
-          placeholder="Password"
-          className="w-full mb-3 p-2 border rounded"
-          onChange={(e) => setPassword(e.target.value)}
-        />
+        <div className="relative mb-3">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            className="w-full p-2 border rounded pr-10"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
 
-        <button className="w-full bg-black text-white p-2 rounded">
-          Login
+          <span
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute right-3 top-2.5"
+          >
+            <FontAwesomeIcon
+              icon={showPassword ? faEyeSlash : faEye}
+              className={`cursor-pointer transition ${
+                showPassword
+                  ? "text-red-500 hover:text-red-700"
+                  : "text-black hover:text-gray-600"
+              }`}
+            />
+          </span>
+        </div>
+
+        <button
+          disabled={loading}
+          className="w-full bg-black text-white p-2 rounded"
+        >
+          {loading ? "Logging in..." : "Login"}
         </button>
       </form>
     </div>

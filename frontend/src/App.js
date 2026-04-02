@@ -22,6 +22,7 @@ import MemberDashboard from "./pages/portal/MemberDashboard";
 import AdminLogin from "./cms/pages/AdminLogin";
 import Dashboard from "./cms/pages/Dashboard";
 import ProtectedAdmin from "./cms/routes/ProtectedAdmin";
+import CMSPages from "./cms/pages/CMSPages"; // ✅ CMS Pages
 // ─── Protected Route ──────────────────────────────────────
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
   const { user, loading } = useAuth();
@@ -278,11 +279,22 @@ function AppRoutes() {
 
       <Route path="/cms/login" element={<AdminLogin />} />
 
+      <Route path="/cms" element={<Navigate to="/cms/dashboard" replace />} />
+
       <Route
         path="/cms/dashboard"
         element={
           <ProtectedAdmin>
             <Dashboard />
+          </ProtectedAdmin>
+        }
+      />
+
+      <Route
+        path="/cms/pages"
+        element={
+          <ProtectedAdmin>
+            <CMSPages />
           </ProtectedAdmin>
         }
       />
