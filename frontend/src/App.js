@@ -23,6 +23,12 @@ import AdminLogin from "./cms/pages/AdminLogin";
 import Dashboard from "./cms/pages/Dashboard";
 import ProtectedAdmin from "./cms/routes/ProtectedAdmin";
 import CMSPages from "./cms/pages/CMSPages"; // ✅ CMS Pages
+import Events from "./cms/pages/Events";
+import About from "./cms/pages/About";
+import Contact from "./cms/pages/Contact";
+import Sponsors from "./cms/pages/Sponsors";
+import Insights from "./cms/pages/Insights";
+import Terms from "./cms/pages/Terms";
 // ─── Protected Route ──────────────────────────────────────
 const ProtectedRoute = ({ children, requireAdmin = false }) => {
   const { user, loading } = useAuth();
@@ -60,7 +66,6 @@ function AppRoutes() {
   return (
     <Routes>
       {/* ── Public ──────────────────────────────── */}
-
       <Route
         path="/"
         element={
@@ -69,7 +74,6 @@ function AppRoutes() {
           </Layout>
         }
       />
-
       <Route
         path="/events"
         element={
@@ -78,7 +82,6 @@ function AppRoutes() {
           </Layout>
         }
       />
-
       <Route
         path="/events/:slug"
         element={
@@ -87,7 +90,6 @@ function AppRoutes() {
           </Layout>
         }
       />
-
       {/* ABOUT PAGE */}
       <Route
         path="/about"
@@ -97,7 +99,6 @@ function AppRoutes() {
           </Layout>
         }
       />
-
       <Route
         path="/community"
         element={
@@ -106,7 +107,6 @@ function AppRoutes() {
           </Layout>
         }
       />
-
       <Route
         path="/advisory-board"
         element={
@@ -115,7 +115,6 @@ function AppRoutes() {
           </Layout>
         }
       />
-
       <Route
         path="/sponsors"
         element={
@@ -124,7 +123,6 @@ function AppRoutes() {
           </Layout>
         }
       />
-
       <Route
         path="/partners"
         element={
@@ -133,7 +131,6 @@ function AppRoutes() {
           </Layout>
         }
       />
-
       <Route
         path="/insights"
         element={
@@ -142,7 +139,6 @@ function AppRoutes() {
           </Layout>
         }
       />
-
       <Route
         path="/contact"
         element={
@@ -151,7 +147,6 @@ function AppRoutes() {
           </Layout>
         }
       />
-
       <Route
         path="/privacy"
         element={
@@ -160,7 +155,6 @@ function AppRoutes() {
           </Layout>
         }
       />
-
       <Route
         path="/terms"
         element={
@@ -169,9 +163,7 @@ function AppRoutes() {
           </Layout>
         }
       />
-
       {/* ── Member Portal ────────────────────────── */}
-
       <Route
         path="/portal/login"
         element={
@@ -180,7 +172,6 @@ function AppRoutes() {
           </Layout>
         }
       />
-
       {/* <Route
         path="/portal/dashboard"
         element={
@@ -191,16 +182,12 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       /> */}
-
       {/* ── Admin Panel ──────────────────────────── */}
-
       <Route path="/admin/login" element={<AdminLoginPage />} />
-
       <Route
         path="/admin"
         element={<Navigate to="/admin/dashboard" replace />}
       />
-
       <Route
         path="/admin/dashboard"
         element={
@@ -231,7 +218,6 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-
       <Route
         path="/admin/users"
         element={
@@ -242,7 +228,6 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-
       <Route
         path="/admin/sponsors"
         element={
@@ -253,7 +238,6 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-
       <Route
         path="/admin/cms"
         element={
@@ -264,7 +248,6 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-
       <Route
         path="/admin/emails"
         element={
@@ -275,12 +258,19 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
-      {/* ── CMS (NEW ADMIN PANEL) ──────────────────────────── */}
-
+      /* ── CMS (NEW ADMIN PANEL) ──────────────────────────── */ // Login
+      (public)
       <Route path="/cms/login" element={<AdminLogin />} />
-
-      <Route path="/cms" element={<Navigate to="/cms/dashboard" replace />} />
-
+      // 🔒 Protected CMS Wrapper
+      <Route
+        path="/cms"
+        element={
+          <ProtectedAdmin>
+            <Navigate to="/cms/dashboard" replace />
+          </ProtectedAdmin>
+        }
+      />
+      {/* 🔒 ALL CMS ROUTES (Protected) */}
       <Route
         path="/cms/dashboard"
         element={
@@ -289,7 +279,6 @@ function AppRoutes() {
           </ProtectedAdmin>
         }
       />
-
       <Route
         path="/cms/pages"
         element={
@@ -298,8 +287,55 @@ function AppRoutes() {
           </ProtectedAdmin>
         }
       />
+      <Route
+        path="/cms/events"
+        element={
+          <ProtectedAdmin>
+            <Events />
+          </ProtectedAdmin>
+        }
+      />
+      <Route
+        path="/cms/about"
+        element={
+          <ProtectedAdmin>
+            <About />
+          </ProtectedAdmin>
+        }
+      />
+      <Route
+        path="/cms/contact"
+        element={
+          <ProtectedAdmin>
+            <Contact />
+          </ProtectedAdmin>
+        }
+      />
+      <Route
+        path="/cms/sponsors"
+        element={
+          <ProtectedAdmin>
+            <Sponsors />
+          </ProtectedAdmin>
+        }
+      />
+      <Route
+        path="/cms/insights"
+        element={
+          <ProtectedAdmin>
+            <Insights />
+          </ProtectedAdmin>
+        }
+      />
+      <Route
+        path="/cms/terms"
+        element={
+          <ProtectedAdmin>
+            <Terms />
+          </ProtectedAdmin>
+        }
+      />
       {/* 404 */}
-
       <Route
         path="*"
         element={
