@@ -26,9 +26,19 @@ export default function Sidebar() {
           {!collapsed && (
             <div className="flex items-center gap-3">
               <i className="fa-solid fa-user-shield text-xl text-blue-600"></i>
-              <div>
+
+              {/* RIGHT SIDE CONTENT (STACKED) */}
+              <div className="flex flex-col">
                 <p className="text-xs text-gray-500">Welcome</p>
                 <p className="font-semibold text-sm">{adminName}</p>
+
+                {/* ✅ PROFILE MENU (NOW BELOW NAME) */}
+                <NavLink
+                  to="/cms/profile"
+                  className="text-xs text-red-600 hover:underline mt-1"
+                >
+                  Profile
+                </NavLink>
               </div>
             </div>
           )}
@@ -64,6 +74,12 @@ export default function Sidebar() {
           {/* SUB MENU */}
           {crmOpen && (
             <div className={`mt-2 space-y-1 ${collapsed ? "" : "ml-6"}`}>
+              <MenuItem
+                to="/cms/news"
+                icon="fa-newspaper"
+                label="News"
+                collapsed={collapsed}
+              />
               <MenuItem
                 to="/cms/events"
                 icon="fa-calendar"

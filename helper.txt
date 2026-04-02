@@ -1,5 +1,5 @@
  git add .
-git commit -m "CMS Login/Logout and pages set"
+git commit -m ""
 git push
 
 

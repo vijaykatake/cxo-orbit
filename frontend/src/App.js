@@ -20,9 +20,11 @@ import AdminDashboard from "./pages/admin/AdminDashboard";
 import MemberDashboard from "./pages/portal/MemberDashboard";
 // CMS (NEW)
 import AdminLogin from "./cms/pages/AdminLogin";
+import ProfilePage from "./cms/pages/ProfilePage";
 import Dashboard from "./cms/pages/Dashboard";
 import ProtectedAdmin from "./cms/routes/ProtectedAdmin";
 import CMSPages from "./cms/pages/CMSPages"; // ✅ CMS Pages
+import News from "./cms/pages/News";
 import Events from "./cms/pages/Events";
 import About from "./cms/pages/About";
 import Contact from "./cms/pages/Contact";
@@ -272,10 +274,26 @@ function AppRoutes() {
       />
       {/* 🔒 ALL CMS ROUTES (Protected) */}
       <Route
+        path="/cms/profile"
+        element={
+          <ProtectedAdmin>
+            <ProfilePage />
+          </ProtectedAdmin>
+        }
+      />
+      <Route
         path="/cms/dashboard"
         element={
           <ProtectedAdmin>
             <Dashboard />
+          </ProtectedAdmin>
+        }
+      />
+      <Route
+        path="/cms/news"
+        element={
+          <ProtectedAdmin>
+            <News />
           </ProtectedAdmin>
         }
       />
