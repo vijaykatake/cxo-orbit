@@ -1,5 +1,5 @@
  git add .
-git commit -m "CMS Online Test For Pages."
+git commit -m "Partner With Us. Button functionality Changed."
 git push
 
 

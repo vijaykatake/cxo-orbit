@@ -94,7 +94,7 @@ export default function Header() {
               </Link>
 
               <Link
-                to="/contact"
+                to="/community"
                 className="bg-soft-gold text-royal-blue text-sm px-4 py-2 rounded font-medium hover:opacity-90"
               >
                 Partner With Us
@@ -163,7 +163,7 @@ export default function Header() {
               </Link>
 
               <Link
-                to="/contact"
+                to="/community"
                 onClick={() => setMenuOpen(false)}
                 className="block py-2 text-soft-gold text-sm"
               >
