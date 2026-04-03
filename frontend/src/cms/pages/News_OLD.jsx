@@ -1,16 +1,17 @@
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useRef } from "react";
 import api from "../services/api";
+import $ from "jquery";
+
 import Sidebar from "../components/Sidebar";
 
-import {
-  useReactTable,
-  getCoreRowModel,
-  getSortedRowModel,
-  getFilteredRowModel,
-} from "@tanstack/react-table";
+// DataTables
+import "datatables.net";
+import "datatables.net-buttons";
+import "datatables.net-buttons/js/buttons.html5";
+import "datatables.net-buttons/js/buttons.print";
 
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
+import jszip from "jszip";
+window.JSZip = jszip;
 
 // FontAwesome
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -19,14 +20,9 @@ import {
   faEdit,
   faTrash,
   faImages,
-  faFileExcel,
 } from "@fortawesome/free-solid-svg-icons";
-import { getPaginationRowModel } from "@tanstack/react-table";
 import Swal from "sweetalert2";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
 
-// ================= DATE FORMAT
 const formatDate = (dateStr) => {
   if (!dateStr) return "";
 
@@ -59,70 +55,81 @@ export default function News() {
   const [news, setNews] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [galleryModal, setGalleryModal] = useState(false);
-  const [globalFilter, setGlobalFilter] = useState("");
+
   const [editData, setEditData] = useState(null);
   const [galleryData, setGalleryData] = useState([]);
-  // ================= PDF EXPORT
-  const exportToPDF = () => {
-    const doc = new jsPDF();
 
-    const tableData = news.map((n) => [
-      n.title,
-      n.info,
-      formatDate(n.date),
-      n.venue,
-    ]);
-
-    autoTable(doc, {
-      head: [["Title", "Info", "Date", "Venue"]],
-      body: tableData,
-    });
-
-    doc.save("news.pdf");
-  };
   // ================= FETCH
   const fetchNews = async () => {
-    const res = await api.get("/cms/news");
-    setNews(res.data);
+    try {
+      const res = await api.get("/cms/news");
+      setNews(res.data);
+    } catch (err) {
+      console.error("Fetch error:", err);
+    }
   };
 
   useEffect(() => {
     fetchNews();
   }, []);
 
-  // ================= EXPORT
-  const exportToExcel = () => {
-    const exportData = news.map((n) => ({
-      Title: n.title,
-      Info: n.info,
-      Date: formatDate(n.date),
-      Venue: n.venue,
-    }));
+  // ================= DATATABLE (UPDATED UI)
+  useEffect(() => {
+    const table = $("#newsTable");
 
-    const ws = XLSX.utils.json_to_sheet(exportData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "News");
+    // 🔥 destroy ONLY DataTable instance (safe)
+    if ($.fn.DataTable.isDataTable(table)) {
+      table.DataTable().destroy(false);
+    }
 
-    const buf = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-    saveAs(new Blob([buf]), "news.xlsx");
-  };
+    // 🔥 reinitialize AFTER React render
+    requestAnimationFrame(() => {
+      table.DataTable({
+        dom: "<'flex justify-between items-center mb-4'Bf>rt<'flex justify-between items-center mt-4'lip>",
+        buttons: ["copy", "excel", "print"],
+      });
+    });
+  }, [news]);
 
   // ================= DELETE
   const handleDelete = async (id, title) => {
     const result = await Swal.fire({
       title: "Confirm Delete",
-      html: `Delete "<b>${title}</b>" ?`,
+      html: `Are you sure you want to delete <b>"${title}"</b> news?`,
       icon: "warning",
       showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Yes, delete it",
+      cancelButtonText: "Cancel",
     });
 
     if (!result.isConfirmed) return;
 
-    await api.delete(`/cms/news/${id}`);
-    fetchNews();
+    try {
+      await api.delete(`/cms/news/${id}`);
+
+      await Swal.fire({
+        title: "Deleted!",
+        text: "News has been deleted successfully.",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+
+      fetchNews();
+    } catch (err) {
+      console.error("Delete error:", err);
+
+      Swal.fire({
+        title: "Error",
+        text: "Failed to delete news",
+        icon: "error",
+      });
+    }
   };
 
-  // ================= ACTIONS
+  // ================= MODALS
   const openAdd = () => {
     setEditData(null);
     setModalOpen(true);
@@ -138,193 +145,93 @@ export default function News() {
     setGalleryModal(true);
   };
 
-  // ================= TABLE COLUMNS
-  const columns = useMemo(
-    () => [
-      { header: "Title", accessorKey: "title" },
-      { header: "Info", accessorKey: "info" },
-      {
-        header: "Date",
-        accessorKey: "date",
-        cell: (info) => formatDate(info.getValue()),
-        sortingFn: (rowA, rowB, columnId) => {
-          return (
-            new Date(rowB.getValue(columnId)) -
-            new Date(rowA.getValue(columnId))
-          );
-        },
-      },
-      { header: "Venue", accessorKey: "venue" },
-      {
-        header: "Gallery",
-        cell: ({ row }) => (
-          <div className="flex justify-center">
-            <button
-              onClick={() => openGallery(row.original)}
-              className="text-blue-600 flex items-center gap-1"
-            >
-              <FontAwesomeIcon icon={faImages} /> Manage
-            </button>
-          </div>
-        ),
-      },
-      {
-        header: "Action",
-        cell: ({ row }) => (
-          <div className="flex justify-center gap-2">
-            <button
-              onClick={() => openEdit(row.original)}
-              className="text-blue-600"
-            >
-              <FontAwesomeIcon icon={faEdit} />
-            </button>
-
-            <button
-              onClick={() => handleDelete(row.original.id, row.original.title)}
-              className="text-red-600"
-            >
-              <FontAwesomeIcon icon={faTrash} />
-            </button>
-          </div>
-        ),
-      },
-    ],
-    [],
-  );
-
-  const table = useReactTable({
-    data: news,
-    columns,
-
-    state: {
-      globalFilter,
-    },
-    onGlobalFilterChange: setGlobalFilter,
-
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-  });
-
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
 
       <div className="flex-1 p-6">
-        {/* 🔥 PAGE HEADER */}
-        <div className="mb-6">
-          <p className="text-sm text-gray-500 mt-1">CRM / News</p>
-        </div>
-
         {/* TOP */}
-        <div className="flex justify-between items-center mb-4">
-          {/* LEFT */}
+        <div className="flex justify-end mb-4">
           <button
             onClick={openAdd}
             className="bg-black text-white px-4 py-2 rounded flex gap-2"
           >
-            <FontAwesomeIcon icon={faPlus} /> Add News
+            <FontAwesomeIcon icon={faPlus} />
+            Add New
           </button>
-          {/* 🔍 SEARCH */}
-          <div className="mb-4">
-            <input
-              type="text"
-              placeholder="Search news..."
-              value={globalFilter ?? ""}
-              onChange={(e) => setGlobalFilter(e.target.value)}
-              className="border px-3 py-2 rounded w-full max-w-sm"
-            />
-          </div>
-          {/* RIGHT */}
-          <div className="flex gap-2">
-            <button
-              onClick={exportToPDF}
-              className="bg-red-600 text-white px-4 py-2 rounded flex gap-2"
-            >
-              PDF
-            </button>
-
-            <button
-              onClick={exportToExcel}
-              className="bg-green-600 text-white px-4 py-2 rounded flex gap-2"
-            >
-              <FontAwesomeIcon icon={faFileExcel} /> Excel
-            </button>
-          </div>
         </div>
 
-        {/* TABLE */}
-        <div className="bg-white p-5 rounded-xl shadow">
-          <table className="w-full border text-sm">
-            <thead className="bg-gray-100">
-              {table.getHeaderGroups().map((hg) => (
-                <tr key={hg.id}>
-                  {hg.headers.map((h) => (
-                    <th
-                      key={h.id}
-                      className="p-2 border cursor-pointer text-center"
-                      onClick={h.column.getToggleSortingHandler()}
-                    >
-                      {h.column.columnDef.header}
-                    </th>
-                  ))}
-                </tr>
-              ))}
+        {/* TABLE (UPDATED UI) */}
+        <div className="bg-white p-5 rounded-2xl shadow-md border border-gray-200">
+          <table id="newsTable" className="display w-full text-sm">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Info</th>
+                <th>Date</th>
+                <th>Venue</th>
+                <th>Gallery</th>
+                <th>Action</th>
+              </tr>
             </thead>
 
             <tbody>
-              {table.getPaginationRowModel().rows.map((row) => (
-                <tr key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="p-2 border">
-                      {cell.column.columnDef.cell
-                        ? cell.column.columnDef.cell(cell)
-                        : cell.getValue()}
-                    </td>
-                  ))}
+              {news.map((item) => (
+                <tr key={item.id}>
+                  <td>{item.title}</td>
+                  <td>{item.info}</td>
+                  <td>{formatDate(item.date)}</td>
+                  <td>{item.venue}</td>
+
+                  <td>
+                    <button
+                      onClick={() => openGallery(item)}
+                      className="text-blue-600 flex items-center gap-1"
+                    >
+                      <FontAwesomeIcon icon={faImages} />
+                      Manage
+                    </button>
+                  </td>
+
+                  <td className="flex gap-2">
+                    <button
+                      onClick={() => openEdit(item)}
+                      className="text-blue-600"
+                    >
+                      <FontAwesomeIcon icon={faEdit} />
+                    </button>
+
+                    <button
+                      onClick={() => handleDelete(item.id, item.title)}
+                      className="text-red-600"
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-        <div className="flex justify-between items-center mt-4">
-          <button
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-            className="px-3 py-1 border rounded"
-          >
-            Previous
-          </button>
 
-          <span>Page {table.getState().pagination.pageIndex + 1}</span>
+        {/* MODALS */}
+        {modalOpen && (
+          <NewsModal
+            key={editData?.id || "new"}
+            data={editData}
+            onClose={() => setModalOpen(false)}
+            fetchNews={fetchNews}
+          />
+        )}
 
-          <button
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-            className="px-3 py-1 border rounded"
-          >
-            Next
-          </button>
-        </div>
+        {galleryModal && (
+          <GalleryModal
+            data={galleryData}
+            onClose={() => setGalleryModal(false)}
+            fetchNews={fetchNews}
+          />
+        )}
       </div>
-      {/* 🔥 ADD MODALS HERE */}
-      {modalOpen && (
-        <NewsModal
-          key={editData?.id || "new"}
-          data={editData}
-          onClose={() => setModalOpen(false)}
-          fetchNews={fetchNews}
-        />
-      )}
-
-      {galleryModal && (
-        <GalleryModal
-          data={galleryData}
-          onClose={() => setGalleryModal(false)}
-          fetchNews={fetchNews}
-        />
-      )}
     </div>
   );
 }
