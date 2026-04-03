@@ -47,6 +47,15 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Static uploads
+const fs = require("fs");
+const uploadDir = path.join(__dirname, "uploads/NewImgUpload");
+
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+  console.log("✅ Upload folder created at server start:", uploadDir);
+} else {
+  console.log("📁 Upload folder already exists");
+}
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ─── Routes ───────────────────────────────────────────────

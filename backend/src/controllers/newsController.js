@@ -17,13 +17,47 @@ const generateSlug = (title) => {
 // ===============================
 exports.createNews = async (req, res) => {
   try {
+    const multer = require("multer");
+    const path = require("path");
+    const fs = require("fs");
+
+    // ✅ Always resolve relative to THIS FILE
+    const uploadPath = path.join(__dirname, "../../uploads/NewImgUpload");
+
+    console.log("📁 Upload Path:", uploadPath);
+
+    // ✅ Ensure folder exists BEFORE upload
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+      console.log("✅ Upload folder created");
+    }
+
+    const storage = multer.diskStorage({
+      destination: function (req, file, cb) {
+        cb(null, uploadPath);
+      },
+      filename: function (req, file, cb) {
+        const uniqueName = Date.now() + path.extname(file.originalname);
+        cb(null, uniqueName);
+      },
+    });
+
+    module.exports = multer({ storage });
+
     const { title, info, date, venue, address, link, gallery = [] } = req.body;
+
     console.log("BODY:", req.body);
     console.log("FILE:", req.file);
+
+    // ❌ If image is mandatory → enforce
+    if (!req.file) {
+      return res.status(400).json({
+        error: "Image upload failed or missing",
+      });
+    }
+
     // ✅ HANDLE IMAGE UPLOAD
-    const main_image = req.file
-      ? `/uploads/NewImgUpload/${req.file.filename}`
-      : null;
+    const main_image = `/uploads/NewImgUpload/${req.file.filename}`;
 
     const slug = generateSlug(title);
 
@@ -38,8 +72,8 @@ exports.createNews = async (req, res) => {
       main_image,
     });
 
-    // 🔥 Insert gallery images (unchanged)
-    if (gallery.length > 0) {
+    // 🔥 Insert gallery images (UNCHANGED)
+    if (gallery && gallery.length > 0) {
       const galleryData = gallery.map((img) => ({
         news_id: news.id,
         image_url: img,
@@ -48,9 +82,17 @@ exports.createNews = async (req, res) => {
       await NewsGallery.bulkCreate(galleryData);
     }
 
-    res.json({ message: "News created successfully", data: news });
+    res.json({
+      message: "News created successfully",
+      data: news,
+    });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error("CREATE NEWS ERROR:", error); // 🔥 IMPORTANT FOR RENDER LOGS
+
+    res.status(500).json({
+      error: "Internal Server Error",
+      details: error.message,
+    });
   }
 };
 
