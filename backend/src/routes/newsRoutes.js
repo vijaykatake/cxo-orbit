@@ -8,21 +8,36 @@ const {
   getPublicNews,
 } = require("../controllers/newsController");
 
-// 🔐 Middleware (reuse your existing)
+// 🔐 Middleware
 const { authenticate, adminOnly } = require("../middleware/authMiddleware");
+
+// ✅ Multer Upload
+const upload = require("../middleware/upload");
 
 // =========================
 // 🔥 CMS ROUTES (ADMIN)
 // =========================
 
-// Create News
-router.post("/cms/news", authenticate, adminOnly, createNews);
+// Create News (WITH IMAGE UPLOAD)
+router.post(
+  "/cms/news",
+  authenticate,
+  adminOnly,
+  upload.single("main_image"), // ✅ added
+  createNews,
+);
 
 // Get All News (CMS table)
 router.get("/cms/news", authenticate, adminOnly, getAllNews);
 
-// Update News
-router.put("/cms/news/:id", authenticate, adminOnly, updateNews);
+// Update News (WITH IMAGE UPLOAD)
+router.put(
+  "/cms/news/:id",
+  authenticate,
+  adminOnly,
+  upload.single("main_image"), // ✅ added
+  updateNews,
+);
 
 // Delete News
 router.delete("/cms/news/:id", authenticate, adminOnly, deleteNews);

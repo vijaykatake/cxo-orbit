@@ -12,19 +12,18 @@ const generateSlug = (title) => {
     .replace(/\s+/g, "-");
 };
 
+// ===============================
 // ✅ CREATE NEWS
+// ===============================
 exports.createNews = async (req, res) => {
   try {
-    const {
-      title,
-      info,
-      date,
-      venue,
-      address,
-      link,
-      main_image,
-      gallery = [],
-    } = req.body;
+    const { title, info, date, venue, address, link, gallery = [] } = req.body;
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
+    // ✅ HANDLE IMAGE UPLOAD
+    const main_image = req.file
+      ? `/uploads/NewImgUpload/${req.file.filename}`
+      : null;
 
     const slug = generateSlug(title);
 
@@ -39,7 +38,7 @@ exports.createNews = async (req, res) => {
       main_image,
     });
 
-    // 🔥 Insert gallery images
+    // 🔥 Insert gallery images (unchanged)
     if (gallery.length > 0) {
       const galleryData = gallery.map((img) => ({
         news_id: news.id,
@@ -55,7 +54,9 @@ exports.createNews = async (req, res) => {
   }
 };
 
+// ===============================
 // ✅ GET ALL NEWS (CMS)
+// ===============================
 exports.getAllNews = async (req, res) => {
   try {
     const news = await News.findAll({
@@ -72,7 +73,9 @@ exports.getAllNews = async (req, res) => {
   }
 };
 
+// ===============================
 // ✅ UPDATE NEWS
+// ===============================
 exports.updateNews = async (req, res) => {
   try {
     const { id } = req.params;
@@ -84,7 +87,7 @@ exports.updateNews = async (req, res) => {
       venue,
       address,
       link,
-      main_image,
+      main_image, // existing value (fallback)
       gallery = [],
     } = req.body;
 
@@ -96,6 +99,11 @@ exports.updateNews = async (req, res) => {
 
     const slug = generateSlug(title);
 
+    // ✅ HANDLE IMAGE (UPLOAD OR KEEP OLD)
+    const updatedImage = req.file
+      ? `/uploads/NewImgUpload/${req.file.filename}`
+      : main_image;
+
     await news.update({
       title,
       slug,
@@ -104,10 +112,10 @@ exports.updateNews = async (req, res) => {
       venue,
       address,
       link,
-      main_image,
+      main_image: updatedImage,
     });
 
-    // 🔥 Replace gallery
+    // 🔥 Replace gallery (unchanged)
     await NewsGallery.destroy({ where: { news_id: id } });
 
     if (gallery.length > 0) {
@@ -125,7 +133,9 @@ exports.updateNews = async (req, res) => {
   }
 };
 
-// ✅ DELETE NEWS (CASCADE HANDLED BY DB)
+// ===============================
+// ✅ DELETE NEWS
+// ===============================
 exports.deleteNews = async (req, res) => {
   try {
     const { id } = req.params;
@@ -144,7 +154,9 @@ exports.deleteNews = async (req, res) => {
   }
 };
 
+// ===============================
 // ✅ PUBLIC API (HOMEPAGE)
+// ===============================
 exports.getPublicNews = async (req, res) => {
   try {
     const today = new Date();

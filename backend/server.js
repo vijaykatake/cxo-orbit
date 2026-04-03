@@ -6,7 +6,10 @@ const morgan = require("morgan");
 const path = require("path");
 
 const sequelize = require("./src/config/database");
-
+const SERVER_URL =
+  process.env.SERVER_URL ||
+  process.env.REACT_APP_API_URL ||
+  "http://localhost:5000";
 // Route imports
 const authRoutes = require("./src/routes/authRoutes");
 const eventRoutes = require("./src/routes/eventRoutes");
@@ -21,13 +24,24 @@ const newsRoutes = require("./src/routes/newsRoutes");
 const app = express();
 
 // ─── Middleware ───────────────────────────────────────────
+const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
 app.use(helmet());
-// app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
+
 app.use(
   cors({
-    origin: "*",
+    origin: [CLIENT_URL],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
   }),
 );
+
+app.options("*", cors());
+
+app.use((req, res, next) => {
+  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+  next();
+});
+
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -44,6 +58,7 @@ app.use("/api/partners", partnerRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/email", emailRoutes);
 app.use("/api/cms", cmsRoutes);
+// app.use("/uploads", require("express").static("uploads"));
 // ✅ CMS News Page
 app.use("/api", newsRoutes);
 // Health check

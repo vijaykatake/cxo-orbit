@@ -4,7 +4,6 @@ const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
 const cmsApi = axios.create({
   baseURL: `${BASE_URL}/api`,
-  headers: { "Content-Type": "application/json" },
 });
 
 // ✅ Use ADMIN TOKEN
