@@ -5,8 +5,8 @@ const {
   getAllNews,
   updateNews,
   deleteNews,
-  getPublicNews,
-
+  getPublicNews, // keep (explained below)
+  getHomePageNews, // ✅ single import
   // 🔥 GALLERY
   getGalleryByNewsId,
   uploadGalleryImages,
@@ -21,10 +21,6 @@ const upload = require("../middleware/upload");
 
 // =========================
 // 🔥 CMS ROUTES (ADMIN)
-// =========================
-
-// =========================
-// 📰 NEWS ROUTES
 // =========================
 
 // Create News
@@ -55,7 +51,6 @@ router.delete("/cms/news/:id", authenticate, adminOnly, deleteNews);
 // 🖼️ GALLERY ROUTES
 // =========================
 
-// Delete gallery image (specific first)
 router.delete(
   "/cms/news/gallery/:id",
   authenticate,
@@ -63,7 +58,6 @@ router.delete(
   deleteGalleryImage,
 );
 
-// Get gallery by news ID
 router.get(
   "/cms/news/:id/gallery",
   authenticate,
@@ -71,7 +65,6 @@ router.get(
   getGalleryByNewsId,
 );
 
-// Upload gallery images
 router.post(
   "/cms/news/:id/gallery",
   authenticate,
@@ -80,10 +73,13 @@ router.post(
 );
 
 // =========================
-// 🌐 PUBLIC ROUTES (PORTAL)
+// 🌐 PUBLIC ROUTES
 // =========================
 
-// Get News for Homepage
+// NEW HOMEPAGE API
+router.get("/home/news", getHomePageNews);
+
+// (OPTIONAL OLD API - KEEP SAFE)
 router.get("/news", getPublicNews);
 
 module.exports = router;
