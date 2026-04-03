@@ -25,11 +25,7 @@ const app = express();
 
 // ─── Middleware ───────────────────────────────────────────
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
-app.use(
-  helmet({
-    crossOriginResourcePolicy: false, // ✅ allow external images
-  }),
-);
+app.use(helmet());
 
 app.use(
   cors({
@@ -41,34 +37,17 @@ app.use(
 
 app.options("*", cors());
 
-// app.use((req, res, next) => {
-//   res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-//   next();
-// });
+app.use((req, res, next) => {
+  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+  next();
+});
 
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Static uploads
-const fs = require("fs");
-const uploadDir = path.join(__dirname, "uploads/NewImgUpload");
-
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-  console.log("✅ Upload folder created at server start:", uploadDir);
-} else {
-  console.log("📁 Upload folder already exists");
-}
-app.use(
-  "/uploads",
-  express.static(path.join(__dirname, "uploads"), {
-    setHeaders: (res) => {
-      res.setHeader("Access-Control-Allow-Origin", "*");
-      // res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-    },
-  }),
-);
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // ─── Routes ───────────────────────────────────────────────
 app.use("/api/auth", authRoutes);
