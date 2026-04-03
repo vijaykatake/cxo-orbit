@@ -1,5 +1,5 @@
  git add .
-git commit -m "CMS News Page. News Addition Is Done. Gallary Work Pending."
+git commit -m "News Page Complete At Local. Testing at production."
 git push
 
 

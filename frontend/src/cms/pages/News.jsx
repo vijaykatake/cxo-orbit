@@ -61,7 +61,7 @@ export default function News() {
   const [galleryModal, setGalleryModal] = useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
   const [editData, setEditData] = useState(null);
-  const [galleryData, setGalleryData] = useState([]);
+  const [galleryData, setGalleryData] = useState(null);
   // ================= PDF EXPORT
   const exportToPDF = () => {
     const doc = new jsPDF();
@@ -354,6 +354,7 @@ function NewsModal({ data, onClose, fetchNews }) {
   }, [data]);
   const isEdit = !!data;
   const [errors, setErrors] = useState({});
+  const [saving, setSaving] = useState(false);
   const validate = () => {
     let err = {};
 
@@ -390,6 +391,8 @@ function NewsModal({ data, onClose, fetchNews }) {
     if (!validate()) return;
 
     try {
+      setSaving(true); // 🔥 START LOADING
+
       const formData = new FormData();
 
       formData.append("title", form.title);
@@ -402,15 +405,19 @@ function NewsModal({ data, onClose, fetchNews }) {
       if (selectedFile) {
         formData.append("main_image", selectedFile);
       }
+
       if (isEdit) {
         await api.put(`/cms/news/${data.id}`, formData);
       } else {
         await api.post("/cms/news", formData);
       }
+
       fetchNews();
       onClose();
     } catch (err) {
       console.error("Submit error:", err);
+    } finally {
+      setSaving(false); // 🔥 STOP LOADING
     }
   };
 
@@ -495,10 +502,152 @@ function NewsModal({ data, onClose, fetchNews }) {
           <button onClick={onClose}>Cancel</button>
           <button
             onClick={handleSubmit}
-            className="bg-black text-white px-4 py-2 rounded"
+            disabled={saving}
+            className={`px-4 py-2 rounded ${
+              saving
+                ? "bg-gray-400 text-white cursor-not-allowed"
+                : "bg-black text-white"
+            }`}
           >
-            Save
+            {saving ? "Saving..." : "Save"}
           </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+/*Gallary Modal*/
+function GalleryModal({ data, onClose }) {
+  const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  // 🔥 SAFE FETCH (only when data exists)
+  useEffect(() => {
+    if (data?.id) {
+      fetchGallery();
+    }
+  }, [data]);
+
+  const fetchGallery = async () => {
+    try {
+      setLoading(true);
+      const res = await api.get(`/cms/news/${data.id}/gallery`);
+      setImages(res.data);
+    } catch (err) {
+      console.error("Gallery fetch error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleUpload = async () => {
+    if (!selectedFiles.length) return;
+
+    const formData = new FormData();
+
+    selectedFiles.forEach((file) => {
+      formData.append("images", file);
+    });
+
+    try {
+      setUploading(true); // 🔥 START
+
+      await api.post(`/cms/news/${data.id}/gallery`, formData);
+
+      setSelectedFiles([]);
+      fetchGallery();
+    } catch (err) {
+      console.error("Upload error:", err);
+    } finally {
+      setUploading(false); // 🔥 STOP
+    }
+  };
+  const handleDeleteImage = async (id) => {
+    const result = await Swal.fire({
+      title: "Delete Image?",
+      text: "This will permanently delete the image",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      await api.delete(`/cms/news/gallery/${id}`);
+      fetchGallery(); // refresh after delete
+    } catch (err) {
+      console.error("Delete error:", err);
+    }
+  };
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+      <div className="bg-white w-full max-w-3xl rounded p-6">
+        {/* HEADER */}
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="font-bold text-lg">Gallery: {data?.title}</h2>
+
+          <button onClick={onClose} className="text-red-500">
+            Close
+          </button>
+        </div>
+        {/* UPLOAD SECTION */}
+        <div className="mb-4 flex gap-2 items-center">
+          <input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={(e) => setSelectedFiles([...e.target.files])}
+          />
+
+          <button
+            onClick={handleUpload}
+            disabled={!selectedFiles.length || uploading}
+            className={`px-3 py-1 rounded ${
+              uploading
+                ? "bg-gray-400 text-white cursor-not-allowed"
+                : selectedFiles.length
+                  ? "bg-black text-white"
+                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
+            }`}
+          >
+            {uploading ? "Uploading..." : "Upload"}
+          </button>
+        </div>
+        {/* CONTENT */}
+        <div className="grid grid-cols-3 gap-4">
+          {loading && (
+            <p className="col-span-3 text-center text-gray-400">Loading...</p>
+          )}
+
+          {!loading && images.length === 0 && (
+            <p className="col-span-3 text-center text-gray-400">
+              No images found
+            </p>
+          )}
+
+          {images.map((img) => (
+            <div
+              key={img.id}
+              className="border rounded overflow-hidden relative"
+            >
+              <img
+                src={`${BASE_URL}${img.image_url}`}
+                alt="gallery"
+                className="w-full h-32 object-cover"
+              />
+
+              {/* 🔥 DELETE BUTTON */}
+              <button
+                onClick={() => handleDeleteImage(img.id)}
+                className="absolute top-1 right-1 bg-red-600 text-white text-xs px-2 py-1 rounded"
+              >
+                ✕
+              </button>
+            </div>
+          ))}
         </div>
       </div>
     </div>

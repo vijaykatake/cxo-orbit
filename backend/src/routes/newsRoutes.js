@@ -6,6 +6,11 @@ const {
   updateNews,
   deleteNews,
   getPublicNews,
+
+  // 🔥 GALLERY
+  getGalleryByNewsId,
+  uploadGalleryImages,
+  deleteGalleryImage,
 } = require("../controllers/newsController");
 
 // 🔐 Middleware
@@ -18,29 +23,61 @@ const upload = require("../middleware/upload");
 // 🔥 CMS ROUTES (ADMIN)
 // =========================
 
-// Create News (WITH IMAGE UPLOAD)
+// =========================
+// 📰 NEWS ROUTES
+// =========================
+
+// Create News
 router.post(
   "/cms/news",
   authenticate,
   adminOnly,
-  upload.single("main_image"), // ✅ added
+  upload.single("main_image"),
   createNews,
 );
 
-// Get All News (CMS table)
+// Get All News
 router.get("/cms/news", authenticate, adminOnly, getAllNews);
 
-// Update News (WITH IMAGE UPLOAD)
+// Update News
 router.put(
   "/cms/news/:id",
   authenticate,
   adminOnly,
-  upload.single("main_image"), // ✅ added
+  upload.single("main_image"),
   updateNews,
 );
 
 // Delete News
 router.delete("/cms/news/:id", authenticate, adminOnly, deleteNews);
+
+// =========================
+// 🖼️ GALLERY ROUTES
+// =========================
+
+// Delete gallery image (specific first)
+router.delete(
+  "/cms/news/gallery/:id",
+  authenticate,
+  adminOnly,
+  deleteGalleryImage,
+);
+
+// Get gallery by news ID
+router.get(
+  "/cms/news/:id/gallery",
+  authenticate,
+  adminOnly,
+  getGalleryByNewsId,
+);
+
+// Upload gallery images
+router.post(
+  "/cms/news/:id/gallery",
+  authenticate,
+  adminOnly,
+  uploadGalleryImages,
+);
 
 // =========================
 // 🌐 PUBLIC ROUTES (PORTAL)

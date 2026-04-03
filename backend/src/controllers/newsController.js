@@ -224,3 +224,102 @@ exports.getPublicNews = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+// ===============================
+// ✅ GET GALLERY BY NEWS ID
+// ===============================
+exports.getGalleryByNewsId = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const images = await NewsGallery.findAll({
+      where: { news_id: id },
+      order: [["id", "DESC"]],
+    });
+
+    res.json(images);
+  } catch (error) {
+    console.error("GET GALLERY ERROR:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+// ===============================
+// ✅ UPLOAD GALLERY IMAGES
+// ===============================
+exports.uploadGalleryImages = async (req, res) => {
+  try {
+    const multer = require("multer");
+    const path = require("path");
+    const fs = require("fs");
+
+    const { id } = req.params;
+
+    const uploadPath = path.join(__dirname, "../../uploads/NewImgUpload");
+
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+
+    const storage = multer.diskStorage({
+      destination: (req, file, cb) => cb(null, uploadPath),
+      filename: (req, file, cb) => {
+        const uniqueName = Date.now() + path.extname(file.originalname);
+        cb(null, uniqueName);
+      },
+    });
+
+    const upload = multer({ storage }).array("images", 10);
+
+    upload(req, res, async (err) => {
+      if (err) {
+        return res.status(400).json({ error: err.message });
+      }
+
+      if (!req.files || req.files.length === 0) {
+        return res.status(400).json({ error: "No files uploaded" });
+      }
+
+      const galleryData = req.files.map((file) => ({
+        news_id: id,
+        image_url: `/uploads/NewImgUpload/${file.filename}`,
+      }));
+
+      await NewsGallery.bulkCreate(galleryData);
+
+      res.json({ message: "Images uploaded successfully" });
+    });
+  } catch (error) {
+    console.error("UPLOAD GALLERY ERROR:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+// ===============================
+// ✅ DELETE GALLERY IMAGE
+// ===============================
+exports.deleteGalleryImage = async (req, res) => {
+  try {
+    const path = require("path");
+    const fs = require("fs");
+
+    const { id } = req.params;
+
+    const image = await NewsGallery.findByPk(id);
+
+    if (!image) {
+      return res.status(404).json({ message: "Image not found" });
+    }
+
+    // 🔥 DELETE FILE FROM SERVER
+    const filePath = path.join(__dirname, "../../", image.image_url);
+
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+
+    await image.destroy();
+
+    res.json({ message: "Image deleted successfully" });
+  } catch (error) {
+    console.error("DELETE IMAGE ERROR:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
