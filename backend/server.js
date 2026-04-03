@@ -56,7 +56,15 @@ if (!fs.existsSync(uploadDir)) {
 } else {
   console.log("📁 Upload folder already exists");
 }
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "uploads"), {
+    setHeaders: (res) => {
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    },
+  }),
+);
 
 // ─── Routes ───────────────────────────────────────────────
 app.use("/api/auth", authRoutes);
