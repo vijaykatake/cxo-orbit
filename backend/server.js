@@ -25,7 +25,11 @@ const app = express();
 
 // ─── Middleware ───────────────────────────────────────────
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false, // 🔥 IMPORTANT FIX
+  }),
+);
 
 app.use(
   cors({
