@@ -25,7 +25,11 @@ const app = express();
 
 // ─── Middleware ───────────────────────────────────────────
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: false, // ✅ allow external images
+  }),
+);
 
 app.use(
   cors({
@@ -37,10 +41,10 @@ app.use(
 
 app.options("*", cors());
 
-app.use((req, res, next) => {
-  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-  next();
-});
+// app.use((req, res, next) => {
+//   res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+//   next();
+// });
 
 app.use(morgan("dev"));
 app.use(express.json());
@@ -61,7 +65,7 @@ app.use(
   express.static(path.join(__dirname, "uploads"), {
     setHeaders: (res) => {
       res.setHeader("Access-Control-Allow-Origin", "*");
-      res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+      // res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
     },
   }),
 );
