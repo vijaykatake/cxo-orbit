@@ -151,17 +151,17 @@ export default function EventsPage() {
                 <p className="mb-2">{rt.topic}</p>
 
                 <div className="flex gap-2 mb-2">
-                  <FiCalendar />
+                  <FiCalendar className="text-[#D4AF37] text-lg" />
                   <span>{rt.date}</span>
                 </div>
 
                 <div className="flex gap-2 mb-2">
-                  <FiMapPin />
+                  <FiMapPin className="text-[#D4AF37] text-lg" />
                   <span>{rt.location}</span>
                 </div>
 
                 <div className="flex gap-2 mb-4">
-                  <FiUsers />
+                  <FiUsers className="text-[#D4AF37] text-lg" />
                   <span>{rt.partner}</span>
                 </div>
 
