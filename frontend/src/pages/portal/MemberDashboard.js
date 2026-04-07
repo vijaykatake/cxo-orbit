@@ -4,7 +4,7 @@ export default function MemberDashboard() {
       <h1 className="text-2xl font-bold text-royal-blue">Member Dashboard</h1>
 
       <p className="mt-4 text-gray-600">
-        Welcome! You are successfully logged in.
+        Your Dashboard & Rewards Comming Sooon.
       </p>
     </div>
   );

@@ -1,77 +1,242 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import api from '../../api';
-import { format } from 'date-fns';
-import { FiCalendar, FiMapPin, FiFilter } from 'react-icons/fi';
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import api from "../../api";
+import { format } from "date-fns";
+import {
+  FiCalendar,
+  FiMapPin,
+  FiFilter,
+  FiUsers,
+  FiImage,
+} from "react-icons/fi";
 
-const EVENT_TYPES = ['all', 'conference', 'roundtable', 'webinar', 'hybrid', 'micro-conference'];
+import table1Hero from "../../assets/Tables/Table1/Hero.jpeg";
+import table2Hero from "../../assets/Tables/Table2/Hero.jpeg";
+import table3Hero from "../../assets/Tables/Table3/Hero.jpeg";
+import table4Hero from "../../assets/Tables/Table4/Hero.jpeg";
+import t4_img1 from "../../assets/Tables/Table4/img1.jpeg";
+import t4_img2 from "../../assets/Tables/Table4/img2.jpeg";
+import t4_img3 from "../../assets/Tables/Table4/img3.jpeg";
+import t4_img4 from "../../assets/Tables/Table4/img4.jpeg";
+
+const EVENT_TYPES = ["all", "conference", "roundtable", "webinar"];
 
 export default function EventsPage() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all');
+  const [filter, setFilter] = useState("all");
+
+  /* =========================
+     GALLERY STATE
+  ========================= */
+  const [galleryOpen, setGalleryOpen] = useState(false);
+  const [galleryImages, setGalleryImages] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     setLoading(true);
-    const params = filter !== 'all' ? `?type=${filter}` : '';
-    api.get(`/events${params}`)
-      .then(res => setEvents(res.data.data || []))
+    const params = filter !== "all" ? `?type=${filter}` : "";
+    api
+      .get(`/events${params}`)
+      .then((res) => setEvents(res.data.data || []))
       .catch(() => setEvents([]))
       .finally(() => setLoading(false));
   }, [filter]);
+
+  /* =========================
+     ROUND TABLE DATA
+  ========================= */
+  const roundTables = [
+    {
+      title: "Round Table 1",
+      image: table1Hero,
+      topic: "CIO Kite-Festival @ Zapurza Museum of Art & Culture",
+      date: "January 13th 2026 @ 9:00am to 4pm",
+      location: "Zapurza Museum of Art & Culture, Pune",
+      partner: "Techigent technologies pvt ltd",
+      gallery: [table1Hero, table1Hero, table1Hero, table1Hero, table1Hero],
+    },
+    {
+      title: "Round Table 2",
+      image: table2Hero,
+      topic: `"Modern IT, Real Impact" → Focus: Delivering actual business value through IT transformation.`,
+      date: "July 30th, 2025 at 6:30 PM",
+      location: "Novotel, Pune",
+      partner: "Webkorps Services India Pvt Ltd.",
+      gallery: [table2Hero, table2Hero, table2Hero, table2Hero, table2Hero],
+    },
+    {
+      title: "Round Table 3",
+      image: table3Hero,
+      topic: "Redefining Network Security in the Age of AI-Powered Threats",
+      date: "25th July 2025 @ 6:30PM",
+      location: "Conrad, Pune",
+      partner: "GTS, Paloalto and Redington",
+      gallery: [table3Hero, table3Hero, table3Hero, table3Hero, table3Hero],
+    },
+    {
+      title: "Round Table 4",
+      image: table4Hero,
+      topic:
+        "How effective are your current cyber-security operations and controls?",
+      date: "Details coming soon",
+      location: "Novotel, Pune",
+      partner: "Samay InfoSolution",
+      gallery: [t4_img1, t4_img2, t4_img3, t4_img4],
+    },
+  ];
+
+  const openGallery = (images) => {
+    setGalleryImages(images);
+    setCurrentIndex(0);
+    setGalleryOpen(true);
+  };
+
+  const next = () =>
+    setCurrentIndex((prev) => (prev + 1) % galleryImages.length);
+
+  const prev = () =>
+    setCurrentIndex((prev) =>
+      prev === 0 ? galleryImages.length - 1 : prev - 1,
+    );
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
       {/* Header */}
       <div className="text-center mb-12">
         <h1 className="section-title">Events & Conferences</h1>
-        <p className="section-subtitle">Exclusive CXO gatherings, forums, and roundtables</p>
+        <p className="section-subtitle">
+          Exclusive CXO gatherings, forums, and roundtables
+        </p>
       </div>
 
       {/* Filters */}
       <div className="flex flex-wrap gap-2 justify-center mb-10">
-        {EVENT_TYPES.map(type => (
-          <button key={type} onClick={() => setFilter(type)}
+        {EVENT_TYPES.map((type) => (
+          <button
+            key={type}
+            onClick={() => setFilter(type)}
             className={`px-4 py-2 rounded-full text-sm font-medium border transition-all capitalize
-              ${filter === type ? 'bg-royal-blue text-white border-royal-blue' : 'border-gray-300 text-gray-600 hover:border-royal-blue'}`}>
-            {type === 'all' ? 'All Events' : type}
+            ${
+              filter === type
+                ? "bg-royal-blue text-white border-royal-blue"
+                : "border-gray-300 text-gray-600 hover:border-royal-blue"
+            }`}
+          >
+            {type === "all" ? "All Events" : type}
           </button>
         ))}
       </div>
 
-      {/* Grid */}
-      {loading ? (
-        <p className="text-center text-gray-500 py-16">Loading events...</p>
-      ) : events.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {events.map(event => (
-            <div key={event.id} className="card border-t-4 border-soft-gold flex flex-col">
-              {event.bannerImage && (
-                <img src={event.bannerImage} alt={event.title} className="w-full h-40 object-cover rounded-t-lg -mt-6 -mx-6 mb-4 w-[calc(100%+3rem)]" />
-              )}
-              <span className="text-xs text-teal-accent font-semibold uppercase tracking-wider">{event.eventType}</span>
-              <h3 className="text-royal-blue font-bold text-lg mt-2 mb-3 flex-1">{event.title}</h3>
-              <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
-                <FiCalendar size={13} />
-                <span>{event.startDate ? format(new Date(event.startDate), 'MMM dd, yyyy') : 'Date TBA'}</span>
+      {/* ROUND TABLES */}
+      <div className="mb-16">
+        <h2 className="text-3xl font-bold text-center text-[#0B2C4D] mb-10">
+          CXO Round Tables
+        </h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {roundTables.map((rt, index) => (
+            <div
+              key={index}
+              className="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col"
+            >
+              <img
+                src={rt.image}
+                alt={rt.title}
+                className="w-full h-40 object-cover"
+              />
+
+              <div className="p-4 flex flex-col flex-grow text-sm">
+                <p className="font-semibold text-[#0B2C4D] mb-1">Topic</p>
+                <p className="mb-2">{rt.topic}</p>
+
+                <div className="flex gap-2 mb-2">
+                  <FiCalendar />
+                  <span>{rt.date}</span>
+                </div>
+
+                <div className="flex gap-2 mb-2">
+                  <FiMapPin />
+                  <span>{rt.location}</span>
+                </div>
+
+                <div className="flex gap-2 mb-4">
+                  <FiUsers />
+                  <span>{rt.partner}</span>
+                </div>
+
+                <button
+                  onClick={() => openGallery(rt.gallery)}
+                  className="mt-auto bg-[#0B2C4D] text-white py-2 rounded flex items-center justify-center gap-2"
+                >
+                  <FiImage /> View Gallery
+                </button>
               </div>
-              <div className="flex items-center gap-2 text-gray-500 text-sm mb-4">
-                <FiMapPin size={13} />
-                <span>{event.city || 'TBA'}</span>
-              </div>
-              {event.isInviteOnly && (
-                <span className="text-xs bg-soft-gold text-royal-blue px-2 py-0.5 rounded font-semibold w-fit mb-3">Invite Only</span>
-              )}
-              <Link to={`/events/${event.slug}`} className="btn-outline text-center text-sm py-2 rounded mt-auto">
-                View Details
-              </Link>
             </div>
           ))}
         </div>
-      ) : (
-        <div className="text-center py-20">
-          <p className="text-gray-500 text-lg">No events found.</p>
-          <p className="text-gray-400 text-sm mt-2">Check back soon for upcoming events.</p>
+      </div>
+
+      {/* =========================
+          GALLERY MODAL
+      ========================= */}
+      {/* =========================
+    PROFESSIONAL GALLERY MODAL
+========================= */}
+      {galleryOpen && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 px-4">
+          <div className="relative w-full max-w-5xl">
+            {/* CLOSE BUTTON */}
+            <button
+              onClick={() => setGalleryOpen(false)}
+              className="absolute -top-10 right-0 text-white text-2xl hover:text-gray-300"
+            >
+              ✕
+            </button>
+
+            {/* MAIN IMAGE */}
+            <div className="bg-black rounded-lg overflow-hidden flex items-center justify-center">
+              <img
+                src={galleryImages[currentIndex]}
+                alt="gallery"
+                className="max-h-[75vh] object-contain"
+              />
+            </div>
+
+            {/* NAVIGATION */}
+            <button
+              onClick={prev}
+              className="absolute left-0 top-1/2 -translate-y-1/2 bg-black/50 text-white px-3 py-2 rounded-r hover:bg-black"
+            >
+              ◀
+            </button>
+
+            <button
+              onClick={next}
+              className="absolute right-0 top-1/2 -translate-y-1/2 bg-black/50 text-white px-3 py-2 rounded-l hover:bg-black"
+            >
+              ▶
+            </button>
+
+            {/* IMAGE COUNT */}
+            <div className="text-center text-white text-sm mt-3">
+              {currentIndex + 1} / {galleryImages.length}
+            </div>
+
+            {/* THUMBNAILS */}
+            <div className="flex gap-2 mt-4 justify-center flex-wrap">
+              {galleryImages.map((img, i) => (
+                <img
+                  key={i}
+                  src={img}
+                  onClick={() => setCurrentIndex(i)}
+                  className={`w-16 h-12 object-cover rounded cursor-pointer border-2 ${
+                    currentIndex === i ? "border-white" : "border-transparent"
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </div>

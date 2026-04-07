@@ -1,5 +1,5 @@
- git add .
-git commit -m "Home Page Latest & Past News Modal done. CMS News Done. Testing on production. Image CROSS DOMAIN ERROR FIXING - 00002"
+git add .
+git commit -m "Round Table Static Page Done & About Us In Progress"
 git push
 
 

@@ -101,7 +101,19 @@ export default function RegisterMemberModal({ open, setOpen }) {
             className="border p-2 rounded"
             onChange={handleChange}
           />
+          <input
+            name="organization"
+            placeholder="Organization Name"
+            className="border p-2 rounded"
+            onChange={handleChange}
+          />
 
+          <input
+            name="industry"
+            placeholder="Industry"
+            className="border p-2 rounded"
+            onChange={handleChange}
+          />
           <input
             name="designation"
             placeholder="Designation"

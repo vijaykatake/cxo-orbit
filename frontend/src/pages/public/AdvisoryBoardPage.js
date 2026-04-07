@@ -5,7 +5,7 @@ import randhir from "../../assets/advisory/randhir.jpg";
 export default function AdvisoryBoardPage() {
   const members = [
     {
-      name: "Bhushan Patil",
+      name: "Subodh Naik",
       role: "Strategy & Finance Director",
       image: bhushan,
       description:

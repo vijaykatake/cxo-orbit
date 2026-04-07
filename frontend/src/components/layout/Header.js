@@ -8,7 +8,7 @@ const navLinks = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About" },
   { to: "/events", label: "Conferences & Events" },
-  { to: "/community", label: "CXO Community" },
+  // { to: "/community", label: "CXO Community" },
   { to: "/sponsors", label: "Sponsors" },
   { to: "/insights", label: "Insights" },
   { to: "/contact", label: "Contact" },
@@ -90,7 +90,7 @@ export default function Header() {
                 to="/portal/login"
                 className="text-white hover:text-soft-gold text-sm transition-colors"
               >
-                Member Login
+                Member Login & Rewards
               </Link>
 
               <Link
