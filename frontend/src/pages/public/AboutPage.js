@@ -55,11 +55,14 @@ Currently serving as Vice President IT at MarketsandMarkets Research Pvt Ltd.`,
       role: "Advisory Member",
       desc: "Supports strategic growth and executive networking.",
     },
+
     {
-      name: "Sagar Mulik",
-      image: null,
+      name: "Prasad Tripurari",
+      image: PrasadT,
       role: "Advisory Member",
-      desc: "Expert in enterprise operations and scaling organizations.",
+      desc: `Prasad Tripurari is a Transformational CTO and has over 25 years of experience as the driving force behind large-scale technology innovation and business transformation. Currently, he is leading the technology and digital strategy at the Ramoji Group of Companies. He is the recipient of numerous prestigious awards and recognition, such as the Cyber Security Award, AI Award, Top 25 Digital Star Award, and CIO 100 Award and is also a Certified Independent Director.
+
+His skills and experience cover technology strategy, artificial intelligence, cybersecurity, cloud computing, and emerging technology, and he also has strong experience working and mentoring cross-functional and high-performing teams. Prasad has a proven record of designing and implementing enterprise-level solutions that bring business impact.`,
     },
     {
       name: "Sangeeta Kant",
@@ -68,12 +71,10 @@ Currently serving as Vice President IT at MarketsandMarkets Research Pvt Ltd.`,
       desc: "Focuses on leadership development and CXO collaboration.",
     },
     {
-      name: "Prasad Tripurari",
-      image: PrasadT,
+      name: "Sagar Mulik",
+      image: null,
       role: "Advisory Member",
-      desc: `Prasad Tripurari is a Transformational CTO and has over 25 years of experience as the driving force behind large-scale technology innovation and business transformation. Currently, he is leading the technology and digital strategy at the Ramoji Group of Companies. He is the recipient of numerous prestigious awards and recognition, such as the Cyber Security Award, AI Award, Top 25 Digital Star Award, and CIO 100 Award and is also a Certified Independent Director.
-
-His skills and experience cover technology strategy, artificial intelligence, cybersecurity, cloud computing, and emerging technology, and he also has strong experience working and mentoring cross-functional and high-performing teams. Prasad has a proven record of designing and implementing enterprise-level solutions that bring business impact.`,
+      desc: "Expert in enterprise operations and scaling organizations.",
     },
   ];
 
@@ -195,9 +196,26 @@ His skills and experience cover technology strategy, artificial intelligence, cy
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {advisoryMembers.map((member, i) => (
-              <MemberCard key={i} member={member} role={member.role} />
-            ))}
+            {advisoryMembers.map((member, i) => {
+              const total = advisoryMembers.length;
+              const remainder = total % 3;
+
+              // If last row has only 1 item → center it
+              const isLastSingle = remainder === 1 && i === total - 1;
+
+              // If last row has 2 items → keep normal (no change needed)
+
+              return (
+                <div
+                  key={i}
+                  className={`
+          ${isLastSingle ? "md:col-start-2" : ""}
+        `}
+                >
+                  <MemberCard member={member} role={member.role} />
+                </div>
+              );
+            })}
           </div>
         </section>
         {/* =========================
