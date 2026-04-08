@@ -6,11 +6,8 @@ import bhushan from "../../assets/advisory/bhushan01.jpg";
 import randhir from "../../assets/advisory/randhir.jpg";
 import Subodh from "../../assets/advisory/Rahul.jpeg";
 import PrasadT from "../../assets/advisory/PrasadT.jpeg";
-export default function AboutPage() {
-  /* =========================
-     DATA
-  ========================= */
 
+export default function AboutPage() {
   const teamMembers = [
     {
       name: "Subodh Naik",
@@ -43,11 +40,7 @@ export default function AboutPage() {
       name: "Rahul Mergu",
       image: Rahul,
       role: "Advisory Member",
-      desc: `Rahul Shivram Mergu is a seasoned professional with expertise in cybersecurity, cloud computing, and strategic IT leadership. Holding certifications like CISM and CCISO, he has deep experience in AWS and Azure environments.
-
-With CXO-level experience (CISO/CIO roles), he aligns IT strategy with business goals effectively. He has 23+ years of experience across multiple industries.
-
-Currently serving as Vice President IT at MarketsandMarkets Research Pvt Ltd.`,
+      desc: `Rahul Shivram Mergu is a seasoned professional...`,
     },
     {
       name: "Bhushan Patil",
@@ -55,14 +48,11 @@ Currently serving as Vice President IT at MarketsandMarkets Research Pvt Ltd.`,
       role: "Advisory Member",
       desc: "Supports strategic growth and executive networking.",
     },
-
     {
       name: "Prasad Tripurari",
       image: PrasadT,
       role: "Advisory Member",
-      desc: `Prasad Tripurari is a Transformational CTO and has over 25 years of experience as the driving force behind large-scale technology innovation and business transformation. Currently, he is leading the technology and digital strategy at the Ramoji Group of Companies. He is the recipient of numerous prestigious awards and recognition, such as the Cyber Security Award, AI Award, Top 25 Digital Star Award, and CIO 100 Award and is also a Certified Independent Director.
-
-His skills and experience cover technology strategy, artificial intelligence, cybersecurity, cloud computing, and emerging technology, and he also has strong experience working and mentoring cross-functional and high-performing teams. Prasad has a proven record of designing and implementing enterprise-level solutions that bring business impact.`,
+      desc: `Prasad Tripurari is a Transformational CTO...`,
     },
     {
       name: "Sangeeta Kant",
@@ -78,27 +68,16 @@ His skills and experience cover technology strategy, artificial intelligence, cy
     },
   ];
 
-  /* =========================
-     STATE (MODAL)
-  ========================= */
-
   const [selectedMember, setSelectedMember] = useState(null);
 
-  const closeModal = () => setSelectedMember(null);
-
-  /* =========================
-     MEMBER CARD
-  ========================= */
-
   const MemberCard = ({ member, role }) => (
-    <div className="bg-white shadow-md rounded overflow-hidden hover:shadow-xl transition duration-300 mx-auto w-full max-w-sm flex flex-col">
-      {/* Image */}
-      <div className="w-full h-48 flex items-center justify-center bg-gray-100 overflow-hidden">
+    <div className="bg-white shadow-md rounded hover:shadow-xl transition mx-auto w-full max-w-sm flex flex-col">
+      <div className="w-full h-48 flex items-center justify-center bg-gray-100">
         {member.image ? (
           <img
             src={member.image}
             alt={member.name}
-            className="max-h-full object-contain transition duration-500 hover:scale-105"
+            className="max-h-full object-contain"
           />
         ) : (
           <div className="w-20 h-20 rounded-full bg-[#0B2C4D] text-white flex items-center justify-center text-xl font-bold">
@@ -111,30 +90,17 @@ His skills and experience cover technology strategy, artificial intelligence, cy
         )}
       </div>
 
-      {/* Content */}
       <div className="p-4 text-center flex flex-col flex-grow">
         <h3 className="text-[#0B2C4D] font-bold text-lg">{member.name}</h3>
+        <p className="text-soft-gold text-sm font-semibold mt-1">{role}</p>
+        <p className="text-gray-600 text-sm mt-2 line-clamp-2">{member.desc}</p>
 
-        {role && (
-          <p className="text-soft-gold text-sm font-semibold mt-1">{role}</p>
-        )}
-
-        {/* Short Description */}
-        {member.desc && (
-          <p className="text-gray-600 text-sm mt-2 line-clamp-2">
-            {member.desc}
-          </p>
-        )}
-
-        {/* Read More */}
-        {member.desc && (
-          <button
-            onClick={() => setSelectedMember(member)}
-            className="text-blue-600 text-xs mt-2 hover:underline"
-          >
-            Read More →
-          </button>
-        )}
+        <button
+          onClick={() => setSelectedMember(member)}
+          className="text-blue-600 text-xs mt-2 hover:underline"
+        >
+          Read More →
+        </button>
       </div>
     </div>
   );
@@ -143,174 +109,164 @@ His skills and experience cover technology strategy, artificial intelligence, cy
     <div className="section">
       <div className="container-main">
         {/* TITLE */}
-        <div className="text-center mb-10">
+        <div className="text-center mb-2">
           <h1 className="section-title">About CXO Orbit Global</h1>
-          <p className="section-subtitle">
-            A Premium Executive Leadership & Collaboration Platform
+
+          <p className="section-subtitle mb-1">
+            CXO Orbit Global is a premium executive engagement platform built
+            for the leaders
           </p>
         </div>
-        {/* =========================
-    ABOUT DESCRIPTION
-========================= */}
-        <section className="max-w-4xl mx-auto text-center mb-12">
-          <p className="text-gray-600 text-sm md:text-base leading-7 mb-4">
-            CXO Orbit Global is a premium executive engagement and leadership
-            platform dedicated to connecting, empowering, and enabling CXO
-            leaders across industries and geographies.
-          </p>
 
-          <p className="text-gray-600 text-sm md:text-base leading-7 mb-4">
-            The platform was created with a vision to build a trusted ecosystem
-            where CIOs, CISOs, CTOs, and business leaders collaborate, exchange
-            strategic insights, and shape the future of enterprise technology
-            and leadership.
-          </p>
-
-          <p className="text-gray-600 text-sm md:text-base leading-7">
-            Through curated roundtables, leadership forums, and executive
-            conferences, CXO Orbit Global fosters meaningful conversations,
-            high-value peer connections, and long-term strategic partnerships.
+        {/* DESCRIPTION (TIGHT + CENTER + STYLED) */}
+        <section className="max-w-4xl mx-auto text-center mb-2 px-4">
+          <p className="text-[#D4AF37] text-[18px] leading-7 text-center">
+            <span className="font-semibold">Driving</span> the future of
+            enterprise technology and business. We bring together the world's
+            most forward-thinking{" "}
+            <span className="text-[#0B2C4D] font-bold">CIOs, CISOs, CTOs</span>,
+            and senior business leaders in trusted environments designed for
+            real dialogue and strategic impact.
           </p>
         </section>
+
+        {/* FEATURE CARDS */}
+        <section className="max-w-6xl mx-auto mb-4 px-4">
+          <div className="grid md:grid-cols-3 gap-4">
+            <div className="bg-white border rounded-xl p-5 shadow-sm">
+              <div className="flex gap-3">
+                <div className="bg-blue-100 text-blue-600 p-2 rounded-lg">
+                  <i className="fa-solid fa-users"></i>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-[#0B2C4D]">
+                    Curated peer connections
+                  </h3>
+                  <p className="text-gray-600 text-sm mt-1">
+                    High-value relationships with peers who understand your
+                    challenges - across industries and geographies.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white border rounded-xl p-5 shadow-sm">
+              <div className="flex gap-3">
+                <div className="bg-green-100 text-green-600 p-2 rounded-lg">
+                  <i className="fa-regular fa-comment"></i>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-[#0B2C4D]">
+                    Strategic dialogue
+                  </h3>
+                  <p className="text-gray-600 text-sm mt-1">
+                    Roundtables, leadership forums, and executive conferences
+                    designed for candid, insight- driven conversations.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white border rounded-xl p-5 shadow-sm">
+              <div className="flex gap-3">
+                <div className="bg-purple-100 text-purple-600 p-2 rounded-lg">
+                  <i className="fa-solid fa-wave-square"></i>
+                </div>
+                <div>
+                  <h3 className="font-semibold text-[#0B2C4D]">
+                    Lasting partnerships
+                  </h3>
+                  <p className="text-gray-600 text-sm mt-1">
+                    A trusted ecosystem that fosters long-term strategic
+                    partnerships - not just one-time networking moments.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* OUR TEAM */}
-        <section className="py-6">
-          <div className="text-center mb-6">
+        <section className="py-4">
+          <div className="text-center mb-4">
             <h2 className="text-3xl font-bold text-[#0B2C4D]">Our Team</h2>
             <div className="w-24 h-[2px] bg-[#D4AF37] mx-auto mt-2"></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-            {teamMembers.map((member, i) => (
-              <MemberCard key={i} member={member} role={member.role} />
+          <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+            {teamMembers.map((m, i) => (
+              <MemberCard key={i} member={m} role={m.role} />
             ))}
           </div>
         </section>
 
         {/* ADVISORY */}
-        <section className="py-10">
-          <div className="text-center mb-6">
+        <section className="py-6">
+          <div className="text-center mb-4">
             <h2 className="text-3xl font-bold text-[#0B2C4D]">
               Advisory Members
             </h2>
             <div className="w-24 h-[2px] bg-[#D4AF37] mx-auto mt-2"></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {advisoryMembers.map((member, i) => {
+          <div className="grid md:grid-cols-3 gap-6">
+            {advisoryMembers.map((m, i) => {
               const total = advisoryMembers.length;
-              const remainder = total % 3;
-
-              // If last row has only 1 item → center it
-              const isLastSingle = remainder === 1 && i === total - 1;
-
-              // If last row has 2 items → keep normal (no change needed)
+              const isLastSingle = total % 3 === 1 && i === total - 1;
 
               return (
-                <div
-                  key={i}
-                  className={`
-          ${isLastSingle ? "md:col-start-2" : ""}
-        `}
-                >
-                  <MemberCard member={member} role={member.role} />
+                <div key={i} className={isLastSingle ? "md:col-start-2" : ""}>
+                  <MemberCard member={m} role={m.role} />
                 </div>
               );
             })}
           </div>
         </section>
         {/* =========================
-    MISSION & VISION
+    EXECUTIVE HERO SECTION
 ========================= */}
-        <section className="mt-12">
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Mission */}
-            <div className="bg-white shadow-md rounded p-6 text-center hover:shadow-lg transition">
-              <h2 className="text-xl font-bold text-[#0B2C4D] mb-2">
-                Our Mission
-              </h2>
-              <p className="text-gray-600 text-sm leading-6">
-                To create the world’s most trusted CXO community platform for
-                collaboration, innovation, and leadership excellence.
-              </p>
+        <section className="max-w-6xl mx-auto mt-6 mb-6 px-4">
+          <div className="bg-gray-50 rounded-xl p-6 md:p-10">
+            {/* Badge */}
+            <div className="inline-block bg-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full mb-4 tracking-wide">
+              CXO ORBIT GLOBAL
             </div>
 
-            {/* Vision */}
-            <div className="bg-white shadow-md rounded p-6 text-center hover:shadow-lg transition">
-              <h2 className="text-xl font-bold text-[#0B2C4D] mb-2">
-                Our Vision
-              </h2>
-              <p className="text-gray-600 text-sm leading-6">
-                To become a globally recognized hub for executive knowledge
-                exchange, strategic partnerships, and future-ready leadership.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* =========================
-    JOURNEY
-========================= */}
-        <section className="mt-12">
-          <div className="text-center mb-6">
-            <h2 className="text-3xl font-bold text-[#0B2C4D]">
-              Our Journey So Far
+            {/* Heading */}
+            <h2 className="text-2xl md:text-4xl font-bold text-gray-900 leading-snug mb-4">
+              The executive platform for leaders who shape enterprise
+              transformation
             </h2>
 
-            <div className="w-24 h-[2px] bg-[#D4AF37] mx-auto mt-2"></div>
-
-            <p className="text-gray-600 text-sm mt-3 max-w-2xl mx-auto">
-              CXO Orbit Global has successfully organized multiple executive
-              engagements across leading technology hubs in India.
+            {/* Description */}
+            <p className="text-gray-600 text-base md:text-lg leading-7 max-w-3xl">
+              A premium, invitation-based engagement platform connecting CIOs,
+              CISOs, CTOs, and senior business leaders through curated forums,
+              strategic roundtables, and high-trust peer networks.
             </p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            {/* Pune */}
-            <div className="bg-white shadow-md rounded p-5 text-center hover:shadow-lg transition">
-              <h3 className="font-bold text-lg text-[#0B2C4D] mb-1">Pune</h3>
-              <p className="text-gray-600 text-sm">CIO & CISO Roundtables</p>
-            </div>
-
-            {/* Mumbai */}
-            <div className="bg-white shadow-md rounded p-5 text-center hover:shadow-lg transition">
-              <h3 className="font-bold text-lg text-[#0B2C4D] mb-1">Mumbai</h3>
-              <p className="text-gray-600 text-sm">Leadership Forums</p>
-            </div>
-
-            {/* Goa */}
-            <div className="bg-white shadow-md rounded p-5 text-center hover:shadow-lg transition">
-              <h3 className="font-bold text-lg text-[#0B2C4D] mb-1">Goa</h3>
-              <p className="text-gray-600 text-sm">CXO Strategy Sessions</p>
-            </div>
-          </div>
         </section>
-        {/* =========================
-            MODAL POPUP
-        ========================= */}
+        {/* MODAL */}
         {selectedMember && (
           <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4">
-            <div className="bg-white rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto relative p-6">
-              {/* Close */}
+            <div className="bg-white rounded-lg max-w-2xl w-full p-6 relative">
               <button
-                onClick={closeModal}
-                className="absolute top-3 right-3 text-gray-500 hover:text-black text-xl"
+                onClick={() => setSelectedMember(null)}
+                className="absolute top-3 right-3 text-xl"
               >
                 ✕
               </button>
 
-              {/* Image */}
               <img
                 src={selectedMember.image || randhir}
-                alt={selectedMember.name}
-                className="w-full max-h-64 object-contain rounded mb-4 bg-gray-100"
+                className="w-full max-h-64 object-contain mb-4"
               />
 
-              {/* Content */}
               <h3 className="text-2xl font-bold text-[#0B2C4D] mb-2">
                 {selectedMember.name}
               </h3>
 
-              <p className="text-gray-700 text-sm leading-relaxed whitespace-pre-line text-justify indent-6">
+              <p className="text-gray-700 text-sm leading-relaxed text-justify">
                 {selectedMember.desc}
               </p>
             </div>
