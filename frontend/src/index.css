@@ -362,3 +362,41 @@ table.dataTable tbody tr:hover {
 .delay-200 {
   animation-delay: 0.3s;
 }
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.8s ease forwards;
+}
+/* Glow + pulse animation */
+@keyframes glowPulse {
+  0% {
+    text-shadow: 0 0 0px rgba(31, 166, 160, 0.3);
+    transform: scale(1);
+  }
+  50% {
+    text-shadow:
+      0 0 10px rgba(31, 166, 160, 0.6),
+      0 0 20px rgba(31, 166, 160, 0.4);
+    transform: scale(1.02);
+  }
+  100% {
+    text-shadow: 0 0 0px rgba(31, 166, 160, 0.3);
+    transform: scale(1);
+  }
+}
+
+/* Sparkle shimmer line */
+.animated-highlight {
+  color: rgb(31, 166, 160);
+  display: inline-block;
+  animation: glowPulse 2s ease-in-out infinite;
+}

@@ -28,15 +28,6 @@ import t4_img2 from "../../assets/Tables/Table4/img2.jpeg";
 import t4_img3 from "../../assets/Tables/Table4/img3.jpeg";
 import t4_img4 from "../../assets/Tables/Table4/img4.jpeg";
 
-// Upcomming Images
-import Upcomming01 from "../../assets/Tables/Upcomming/Beyond Cost Savings.jpg";
-import Upcomming02 from "../../assets/Tables/Upcomming/Infrastructure2026.png";
-import Upcomming03 from "../../assets/Tables/Upcomming/ScallingWorkload.png";
-import Upcomming04 from "../../assets/Tables/Upcomming/Cybersecurity01.jpg";
-import Upcomming05 from "../../assets/Tables/Upcomming/Overseas.png";
-import Upcomming07 from "../../assets/Tables/Upcomming/WareFare.png";
-import Upcomming08 from "../../assets/Tables/Upcomming/Balancing.jpg";
-
 const EVENT_TYPES = ["all", "conference", "roundtable", "webinar"];
 
 export default function EventsPage() {
@@ -64,89 +55,6 @@ export default function EventsPage() {
   /* =========================
      ROUND TABLE DATA
   ========================= */
-  const upcomingEvents = [
-    {
-      title: "Round Table",
-      image: Upcomming01, // ✅ ADD
-      topic: "Beyond Cost Savings: Driving ROI from Cloud Investments",
-      date: "April",
-      location: "Pune",
-      partner: "Teleglobal Internationals",
-      url: "https://forms.gle/XMLEA6XPex11ReWV7",
-      gallery: [table1Hero], // ✅ ADD
-    },
-    {
-      title: "Round Table",
-      image: Upcomming02,
-      topic: "Infrastructure 2026: From Cost Center to Business Enabler",
-      date: "June",
-      location: "Hyderabad",
-      partner: "To Be decide",
-      url: "https://forms.gle/Saq6sbivNtkJoVdv9",
-      gallery: [table2Hero],
-    },
-    {
-      title: "Round Table",
-      image: Upcomming03,
-      topic: "Scaling AI Workloads Without Breaking Infra Budgets",
-      date: "May",
-      location: "Bangalore",
-      partner: "To Be decide",
-      url: "https://forms.gle/boK26QnpQbd1E8FQA",
-      gallery: [table3Hero],
-    },
-    {
-      title: "Round Table",
-      image: Upcomming04,
-      topic: "Cybersecurity as a Business Risk: Boardroom Conversations",
-      date: "May",
-      location: "Mumbai",
-      partner: "To Be decide",
-      url: "https://forms.gle/7iFu2QVGrhGfPGPy8",
-      gallery: [table4Hero],
-    },
-
-    {
-      title: "Mini Conference",
-      image: Upcomming05,
-      topic: "Overseas CIO Meet",
-      date: "September",
-      location: "Phuket, Krabi",
-      partner: "To be decide",
-      url: "https://forms.gle/8CfhvzmUPqQup6TE8",
-      gallery: [table1Hero],
-    },
-    {
-      title: "Round Table",
-      image: table2Hero,
-      topic: "Zero Trust 2.0: Beyond ‘Never Trust, Always Verify’",
-      date: "July",
-      location: "Chennai",
-      partner: "To Be decide",
-      url: "https://forms.gle/3G4Qba3Fk6NZYcTG9",
-      gallery: [table2Hero],
-    },
-    {
-      title: "Round Table",
-      image: Upcomming07,
-      topic: "Cyber Warfare & Enterprise Security: Are We Prepared?",
-      date: "June",
-      location: "Mumbai",
-      partner: "To Be decide",
-      url: "https://forms.gle/4zxCJbGYJFtLysm97",
-      gallery: [table3Hero],
-    },
-    {
-      title: "Round Table",
-      image: Upcomming08,
-      topic: "Balancing Cost, Risk & Performance in Modern IT",
-      date: "May",
-      location: "Pune",
-      partner: "To Be decide",
-      url: "https://forms.gle/CFTWUnhL4ZDCgu6R6",
-      gallery: [table4Hero],
-    },
-  ];
   const roundTables = [
     {
       title: "Round Table 1",
@@ -228,68 +136,6 @@ export default function EventsPage() {
           </button>
         ))}
       </div>
-      {/* =========================
-    UPCOMING EVENTS
-========================= */}
-      <div className="mb-16">
-        <h2 className="text-3xl font-bold text-center text-[#0B2C4D] mb-10">
-          Upcoming Events
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {upcomingEvents.map((ev, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-xl shadow-lg overflow-hidden flex flex-col"
-            >
-              <img
-                src={ev.image}
-                alt={ev.title}
-                className="w-full h-40 object-cover"
-              />
-              <div className="p-4 flex flex-col flex-grow text-sm">
-                {/* TOPIC */}
-                <p className="font-semibold text-[rgb(31_166_160)] text-[15px] mb-2 text-center">
-                  {ev.topic}
-                </p>
-
-                {/* DATE */}
-                <div className="flex gap-2 mb-2">
-                  <FiCalendar className="text-[#D4AF37] text-lg" />
-                  <span>{ev.date}</span>
-                </div>
-
-                {/* LOCATION */}
-                <div className="flex gap-2 mb-2">
-                  <FiMapPin className="text-[#D4AF37] text-lg" />
-                  <span>{ev.location}</span>
-                </div>
-
-                {/* PARTNER */}
-                <div className="flex gap-2 mb-4">
-                  <FiUsers className="text-[#D4AF37] text-lg" />
-                  <span>{ev.partner}</span>
-                </div>
-
-                {/* ACTION BUTTONS */}
-                <div className="flex gap-2 mt-auto">
-                  {/* GALLERY */}
-
-                  {/* REGISTER */}
-                  <a
-                    href={ev.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 bg-[rgb(31_166_160)] text-white py-2 rounded text-center font-medium hover:opacity-90 transition"
-                  >
-                    Register
-                  </a>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* ROUND TABLES */}
       <div className="mb-16">
@@ -311,9 +157,7 @@ export default function EventsPage() {
 
               <div className="p-4 flex flex-col flex-grow text-sm">
                 <p className="font-semibold text-[#0B2C4D] mb-1">Topic</p>
-                <p className="font-semibold text-[rgb(31_166_160)] text-[15px] mb-1 text-center">
-                  {rt.topic}
-                </p>
+                <p className="mb-2">{rt.topic}</p>
 
                 <div className="flex gap-2 mb-2">
                   <FiCalendar className="text-[#D4AF37] text-lg" />

@@ -1,5 +1,5 @@
 git add .
-git commit -m "Round Table Static Page Done & About Us In Progress"
+git commit -m "Demo Event Gallery, About and Member Dashboard Is Done."
 git push
 
 
