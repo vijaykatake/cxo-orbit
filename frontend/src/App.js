@@ -12,6 +12,7 @@ import EventsPage from "./pages/public/EventsPage";
 import AboutPage from "./pages/public/AboutPage";
 import CommunityPage from "./pages/public/CommunityPage";
 import AdvisoryBoardPage from "./pages/public/AdvisoryBoardPage";
+import SponsorsPage from "./pages/public/SponsorsPage";
 // Portal Pages
 import MemberLoginPage from "./pages/portal/MemberLoginPage";
 // Admin Pages
@@ -121,7 +122,7 @@ function AppRoutes() {
         path="/sponsors"
         element={
           <Layout>
-            <Placeholder title="Sponsors" />
+            <SponsorsPage />
           </Layout>
         }
       />

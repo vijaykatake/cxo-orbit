@@ -400,3 +400,37 @@ table.dataTable tbody tr:hover {
   display: inline-block;
   animation: glowPulse 2s ease-in-out infinite;
 }
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-wrapper {
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.animate-marquee {
+  display: flex;
+  gap: 40px;
+  width: max-content;
+
+  /* 👇 THIS IS THE FIX */
+  transform: translateX(25%);
+
+  animation: marquee 25s linear infinite;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(25%);
+  }
+  100% {
+    transform: translateX(-25%);
+  }
+}

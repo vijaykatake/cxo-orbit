@@ -1,5 +1,5 @@
 git add .
-git commit -m "Demo Event Gallery, About and Member Dashboard Is Done."
+git commit -m "Sponsor Page Complete.."
 git push
 
 
