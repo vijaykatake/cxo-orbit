@@ -34,6 +34,7 @@ import Upcomming02 from "../../assets/Tables/Upcomming/Infrastructure2026.png";
 import Upcomming03 from "../../assets/Tables/Upcomming/ScallingWorkload.png";
 import Upcomming04 from "../../assets/Tables/Upcomming/Cybersecurity01.jpg";
 import Upcomming05 from "../../assets/Tables/Upcomming/Overseas.png";
+import Upcomming06 from "../../assets/Tables/Upcomming/ModernIT.jpg";
 import Upcomming07 from "../../assets/Tables/Upcomming/WareFare.png";
 import Upcomming08 from "../../assets/Tables/Upcomming/Balancing.jpg";
 
@@ -118,7 +119,7 @@ export default function EventsPage() {
     },
     {
       title: "Round Table",
-      image: table2Hero,
+      image: Upcomming06,
       topic: "Zero Trust 2.0: Beyond ‘Never Trust, Always Verify’",
       date: "July",
       location: "Chennai",
