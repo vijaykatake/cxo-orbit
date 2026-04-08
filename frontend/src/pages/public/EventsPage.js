@@ -14,6 +14,7 @@ import table1Hero from "../../assets/Tables/Table1/Hero.jpeg";
 import table2Hero from "../../assets/Tables/Table2/Hero.jpeg";
 import table3Hero from "../../assets/Tables/Table3/Hero.jpeg";
 import table4Hero from "../../assets/Tables/Table4/Hero.jpeg";
+import t1_img1 from "../../assets/Tables/Table4/img1.jpeg";
 import t4_img1 from "../../assets/Tables/Table4/img1.jpeg";
 import t4_img2 from "../../assets/Tables/Table4/img2.jpeg";
 import t4_img3 from "../../assets/Tables/Table4/img3.jpeg";
