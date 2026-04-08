@@ -14,7 +14,15 @@ import table1Hero from "../../assets/Tables/Table1/Hero.jpeg";
 import table2Hero from "../../assets/Tables/Table2/Hero.jpeg";
 import table3Hero from "../../assets/Tables/Table3/Hero.jpeg";
 import table4Hero from "../../assets/Tables/Table4/Hero.jpeg";
-import t1_img1 from "../../assets/Tables/Table4/img1.jpeg";
+import t1_img1 from "../../assets/Tables/Table1/img1.jpeg";
+import t1_img2 from "../../assets/Tables/Table1/img2.jpeg";
+import t1_img3 from "../../assets/Tables/Table1/img3.jpeg";
+
+import t2_img1 from "../../assets/Tables/Table2/img1.jpeg";
+import t2_img2 from "../../assets/Tables/Table2/img2.jpeg";
+import t2_img3 from "../../assets/Tables/Table2/img3.jpeg";
+import t2_img4 from "../../assets/Tables/Table2/img4.jpeg";
+
 import t4_img1 from "../../assets/Tables/Table4/img1.jpeg";
 import t4_img2 from "../../assets/Tables/Table4/img2.jpeg";
 import t4_img3 from "../../assets/Tables/Table4/img3.jpeg";
@@ -55,7 +63,7 @@ export default function EventsPage() {
       date: "January 13th 2026 @ 9:00am to 4pm",
       location: "Zapurza Museum of Art & Culture, Pune",
       partner: "Techigent technologies pvt ltd",
-      gallery: [table1Hero, table1Hero, table1Hero, table1Hero, table1Hero],
+      gallery: [t1_img1, t1_img2, t1_img3],
     },
     {
       title: "Round Table 2",
@@ -64,7 +72,7 @@ export default function EventsPage() {
       date: "July 30th, 2025 at 6:30 PM",
       location: "Novotel, Pune",
       partner: "Webkorps Services India Pvt Ltd.",
-      gallery: [table2Hero, table2Hero, table2Hero, table2Hero, table2Hero],
+      gallery: [t2_img1, t2_img2, t2_img3, t2_img4, table2Hero],
     },
     {
       title: "Round Table 3",
