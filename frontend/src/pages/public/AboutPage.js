@@ -3,7 +3,7 @@ import Rahul from "../../assets/advisory/Subodh.jpeg";
 import Priyanka from "../../assets/advisory/Priyanka.jpeg";
 import Sudesh from "../../assets/advisory/sandesh.jpg";
 import bhushan from "../../assets/advisory/bhushan01.jpg";
-import randhir from "../../assets/advisory/randhir.jpg";
+import randhir from "../../assets/advisory/randhir.jpeg";
 import Subodh from "../../assets/advisory/Rahul.jpeg";
 import PrasadT from "../../assets/advisory/PrasadT.jpeg";
 

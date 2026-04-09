@@ -9,7 +9,7 @@ const navLinks = [
   { to: "/about", label: "About" },
   { to: "/events", label: "Conferences & Events" },
   // { to: "/community", label: "CXO Community" },
-  { to: "/sponsors", label: "Sponsors" },
+  { to: "/sponsors", label: "Partners" },
   { to: "/insights", label: "Insights" },
   { to: "/contact", label: "Contact" },
 ];

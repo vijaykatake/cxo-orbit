@@ -326,7 +326,7 @@ exports.deleteGalleryImage = async (req, res) => {
 // ===============================
 // ✅ HOMEPAGE NEWS (NEW SAFE API)
 // ===============================
-exports.getHomePageNews = async (req, res) => {
+exports.getHomePageNewsOLD = async (req, res) => {
   try {
     const today = new Date();
     today.setHours(0, 0, 0, 0); // 🔥 fix date issue
@@ -371,6 +371,46 @@ exports.getHomePageNews = async (req, res) => {
     res.json({
       latestNews: formatNews(latestNewsRaw),
       pastNews: formatNews(pastNewsRaw),
+    });
+  } catch (error) {
+    console.error("HOMEPAGE NEWS ERROR:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+// ===============================
+// ✅ HOMEPAGE NEWS (SIMPLIFIED)
+// ===============================
+exports.getHomePageNews = async (req, res) => {
+  try {
+    // 🔥 FETCH ALL NEWS (NO DATE FILTER)
+    const newsRaw = await News.findAll({
+      order: [["date", "DESC"]], // ✅ latest first
+      include: "gallery",
+    });
+
+    // 🔥 BASE URL (for images)
+    const BASE_URL = process.env.BASE_URL || "http://localhost:5000";
+
+    // 🔥 FORMAT FUNCTION
+    const formattedNews = newsRaw.map((item) => {
+      const data = item.toJSON();
+
+      return {
+        ...data,
+
+        // ✅ MAIN IMAGE FIX
+        main_image: data.main_image ? BASE_URL + data.main_image : null,
+
+        // ✅ GALLERY FIX
+        gallery: data.gallery
+          ? data.gallery.map((g) => BASE_URL + g.image_url)
+          : [],
+      };
+    });
+
+    // ✅ RETURN ONLY ONE LIST
+    res.json({
+      news: formattedNews,
     });
   } catch (error) {
     console.error("HOMEPAGE NEWS ERROR:", error);
