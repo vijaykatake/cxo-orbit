@@ -32,22 +32,32 @@ exports.registerPartner = async (req, res) => {
 
     // Send Welcome Email
     // fire-and-forget email (non-blocking)
-    emailService
-      .sendEmail({
-        to: email,
-        subject:
-          "Welcome to CXO Orbit Global – Partnership Registration Received",
-        html: `
-      <p>Dear ${name},</p>
-      <p>Thank you for expressing your interest in partnering with CXO Orbit Global.</p>
-      <p>We are delighted to connect with leaders and organizations who share our vision.</p>
-      <p>Our team will connect with you shortly.</p>
-      <br/>
-      <p>Warm regards,<br/>Team CXO Orbit Global</p>
-    `,
-      })
-      .then(() => console.log("✅ Email sent"))
-      .catch((err) => console.error("❌ Email failed:", err.message));
+    try {
+      await Promise.race([
+        emailService.sendEmail({
+          to: email,
+          subject:
+            "Welcome to CXO Orbit Global – Partnership Registration Received",
+          html: `
+        <p>Dear ${name},</p>
+        <p>Thank you for expressing your interest in partnering with CXO Orbit Global.</p>
+        <p>We are delighted to connect with leaders and organizations who share our vision.</p>
+        <p>Our team will connect with you shortly.</p>
+        <br/>
+        <p>Warm regards,<br/>Team CXO Orbit Global</p>
+      `,
+        }),
+
+        // ⏱ timeout fallback (VERY IMPORTANT)
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("Email timeout")), 8000),
+        ),
+      ]);
+
+      console.log("✅ Email sent");
+    } catch (err) {
+      console.error("❌ Email failed but continuing:", err.message);
+    }
 
     return res.status(201).json({
       success: true,
