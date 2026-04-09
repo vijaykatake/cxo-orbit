@@ -1,5 +1,5 @@
 git add .
-git commit -m "Home Page Completed To Latest News."
+git commit -m "Partner Registeration Successful. Email Error."
 git push
 
 

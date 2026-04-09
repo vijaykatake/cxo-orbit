@@ -31,19 +31,23 @@ exports.registerPartner = async (req, res) => {
     });
 
     // Send Welcome Email
-    await emailService.sendEmail({
-      to: email,
-      subject:
-        "Welcome to CXO Orbit Global – Partnership Registration Received",
-      html: `
-        <p>Dear ${name},</p>
-        <p>Thank you for expressing your interest in partnering with CXO Orbit Global.</p>
-        <p>We are delighted to connect with leaders and organizations who share our vision of building a trusted ecosystem for CXOs to collaborate, innovate, and lead.</p>
-        <p>Our team will review your submission and connect with you shortly.</p>
-        <br/>
-        <p>Warm regards,<br/>Team CXO Orbit Global</p>
-      `,
-    });
+    try {
+      await emailService.sendEmail({
+        to: email,
+        subject:
+          "Welcome to CXO Orbit Global – Partnership Registration Received",
+        html: `
+      <p>Dear ${name},</p>
+      <p>Thank you for expressing your interest in partnering with CXO Orbit Global.</p>
+      <p>We are delighted to connect with leaders and organizations who share our vision.</p>
+      <p>Our team will connect with you shortly.</p>
+      <br/>
+      <p>Warm regards,<br/>Team CXO Orbit Global</p>
+    `,
+      });
+    } catch (err) {
+      console.error("❌ Email failed (ignored):", err.message);
+    }
 
     return res.status(201).json({
       success: true,
