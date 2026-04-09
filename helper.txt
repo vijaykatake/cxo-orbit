@@ -1,5 +1,5 @@
 git add .
-git commit -m "Sponsor Page Complete.."
+git commit -m "Contact & Partners Completed"
 git push
 
 

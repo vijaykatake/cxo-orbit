@@ -380,7 +380,7 @@ exports.getHomePageNewsOLD = async (req, res) => {
 // ===============================
 // ✅ HOMEPAGE NEWS (SIMPLIFIED)
 // ===============================
-exports.getHomePageNews = async (req, res) => {
+exports.getHomePageNewsV01 = async (req, res) => {
   try {
     // 🔥 FETCH ALL NEWS (NO DATE FILTER)
     const newsRaw = await News.findAll({
@@ -412,6 +412,36 @@ exports.getHomePageNews = async (req, res) => {
     res.json({
       news: formattedNews,
     });
+  } catch (error) {
+    console.error("HOMEPAGE NEWS ERROR:", error);
+    res.status(500).json({ error: error.message });
+  }
+};
+// ===============================
+// ✅ HOMEPAGE NEWS (FINAL)
+// ===============================
+exports.getHomePageNews = async (req, res) => {
+  try {
+    const newsRaw = await News.findAll({
+      order: [["date", "DESC"]], // ✅ latest first
+      include: "gallery",
+    });
+
+    const BASE_URL = process.env.BASE_URL || "http://localhost:5000";
+
+    const formattedNews = newsRaw.map((item) => {
+      const data = item.toJSON();
+
+      return {
+        ...data,
+        main_image: data.main_image ? BASE_URL + data.main_image : null,
+        gallery: data.gallery
+          ? data.gallery.map((g) => BASE_URL + g.image_url)
+          : [],
+      };
+    });
+
+    res.json({ news: formattedNews });
   } catch (error) {
     console.error("HOMEPAGE NEWS ERROR:", error);
     res.status(500).json({ error: error.message });

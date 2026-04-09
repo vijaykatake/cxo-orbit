@@ -6,14 +6,14 @@ import { FiCalendar, FiMapPin, FiArrowRight } from "react-icons/fi";
 import LatestNews from "../../components/home/LatestNews";
 
 export default function HomePage() {
-  const [events, setEvents] = useState([]);
+  // const [events, setEvents] = useState([]);
 
-  useEffect(() => {
-    api
-      .get("/events?status=published")
-      .then((res) => setEvents(res.data.data?.slice(0, 3) || []))
-      .catch(() => {});
-  }, []);
+  // useEffect(() => {
+  //   api
+  //     .get("/events?status=published")
+  //     .then((res) => setEvents(res.data.data?.slice(0, 3) || []))
+  //     .catch(() => {});
+  // }, []);
 
   return (
     <div>
@@ -51,61 +51,6 @@ export default function HomePage() {
       <div className="py-2">
         <LatestNews />
       </div>
-
-      {/* ── Upcoming Events ───────────────── */}
-      <section className="py-2 px-4 max-w-7xl mx-auto">
-        <div className="text-center mb-4">
-          <h2 className="text-3xl font-bold text-[#0B2C4D]">Upcoming Events</h2>
-          <div className="w-24 h-[2px] bg-[#D4AF37] mx-auto mt-2"></div>
-        </div>
-
-        {events.length > 0 ? (
-          <div className="grid md:grid-cols-3 gap-8">
-            {events.map((event) => (
-              <div key={event.id} className="bg-white shadow-md p-4">
-                <span className="text-red-600 text-xs font-semibold uppercase">
-                  {event.eventType}
-                </span>
-
-                <h3 className="text-[#0B2C4D] font-bold text-lg mt-2 mb-2">
-                  {event.title}
-                </h3>
-
-                <div className="flex items-center gap-2 text-gray-500 text-sm mb-1">
-                  <FiCalendar size={14} />
-                  <span>
-                    {event.startDate
-                      ? format(new Date(event.startDate), "MMM dd, yyyy")
-                      : "TBA"}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-2 text-gray-500 text-sm mb-3">
-                  <FiMapPin size={14} />
-                  <span>{event.city || "TBA"}</span>
-                </div>
-
-                <Link
-                  to={`/events/${event.slug}`}
-                  className="text-teal-accent text-sm flex items-center gap-1 hover:gap-2 transition-all"
-                >
-                  Learn More <FiArrowRight size={14} />
-                </Link>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-center text-gray-500 text-sm">
-            No upcoming events.
-          </p>
-        )}
-
-        <div className="text-center mt-4">
-          <Link to="/events" className="btn-outline px-6 py-2 text-sm">
-            View All Events
-          </Link>
-        </div>
-      </section>
 
       {/* ── Why CXO Orbit ───────────────── */}
       <section className="bg-royal-blue text-white py-4 px-4">
