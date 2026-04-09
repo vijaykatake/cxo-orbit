@@ -1,6 +1,6 @@
-const nodemailer = require('nodemailer');
-const EmailLog = require('../models/EmailLog');
-const { v4: uuidv4 } = require('uuid');
+const nodemailer = require("nodemailer");
+const EmailLog = require("../models/EmailLog");
+const { v4: uuidv4 } = require("uuid");
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
@@ -13,26 +13,44 @@ const transporter = nodemailer.createTransport({
 });
 
 // ─── Generic Send Email ───────────────────────────────────
-const sendEmail = async ({ to, subject, html, templateType = 'general', relatedId = null }) => {
+const sendEmail = async ({
+  to,
+  subject,
+  html,
+  templateType = "general",
+  relatedId = null,
+}) => {
   const logId = uuidv4();
   try {
     await transporter.sendMail({
-      from: `"CXO Orbit Global" <${process.env.EMAIL_FROM}>`,
+      from: `"CXO Orbit Global" <${process.env.SMTP_USER}>`,
       to,
       subject,
       html,
     });
 
     await EmailLog.create({
-      id: logId, recipientEmail: to, subject, templateType, body: html,
-      status: 'sent', sentAt: new Date(), relatedId,
+      id: logId,
+      recipientEmail: to,
+      subject,
+      templateType,
+      body: html,
+      status: "sent",
+      sentAt: new Date(),
+      relatedId,
     });
 
     return { success: true };
   } catch (err) {
     await EmailLog.create({
-      id: logId, recipientEmail: to, subject, templateType, body: html,
-      status: 'failed', errorMessage: err.message, relatedId,
+      id: logId,
+      recipientEmail: to,
+      subject,
+      templateType,
+      body: html,
+      status: "failed",
+      errorMessage: err.message,
+      relatedId,
     });
     throw err;
   }
@@ -41,8 +59,9 @@ const sendEmail = async ({ to, subject, html, templateType = 'general', relatedI
 // ─── OTP Email ────────────────────────────────────────────
 const sendOTPEmail = (to, otp, firstName) =>
   sendEmail({
-    to, templateType: 'otp',
-    subject: 'Your CXO Orbit Login Code',
+    to,
+    templateType: "otp",
+    subject: "Your CXO Orbit Login Code",
     html: `
       <div style="font-family:Arial,sans-serif;max-width:480px;margin:auto;">
         <div style="background:#0B2C4D;padding:24px;text-align:center;">
@@ -62,7 +81,9 @@ const sendOTPEmail = (to, otp, firstName) =>
 // ─── Event Invitation Email ───────────────────────────────
 const sendEventInvite = (to, firstName, event) =>
   sendEmail({
-    to, templateType: 'event_invite', relatedId: event.id,
+    to,
+    templateType: "event_invite",
+    relatedId: event.id,
     subject: `You're Invited: ${event.title}`,
     html: `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;">
@@ -74,7 +95,7 @@ const sendEventInvite = (to, firstName, event) =>
           <p>We are pleased to invite you to an exclusive CXO event:</p>
           <h3 style="color:#0B2C4D;">${event.title}</h3>
           <p><strong>Date:</strong> ${new Date(event.startDate).toDateString()}</p>
-          <p><strong>Venue:</strong> ${event.venue || event.city || 'TBA'}</p>
+          <p><strong>Venue:</strong> ${event.venue || event.city || "TBA"}</p>
           <div style="text-align:center;margin:32px 0;">
             <a href="${process.env.CLIENT_URL}/events/${event.slug}/rsvp"
                style="background:#D4AF37;color:#0B2C4D;padding:14px 32px;border-radius:4px;text-decoration:none;font-weight:bold;">
@@ -88,7 +109,9 @@ const sendEventInvite = (to, firstName, event) =>
 // ─── Registration Confirmation ────────────────────────────
 const sendRegistrationConfirmation = (to, firstName, event) =>
   sendEmail({
-    to, templateType: 'registration_confirm', relatedId: event.id,
+    to,
+    templateType: "registration_confirm",
+    relatedId: event.id,
     subject: `Registration Confirmed: ${event.title}`,
     html: `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;">
@@ -99,7 +122,7 @@ const sendRegistrationConfirmation = (to, firstName, event) =>
           <p>Hi <strong>${firstName}</strong>,</p>
           <p>Your registration for <strong>${event.title}</strong> is confirmed.</p>
           <p><strong>Date:</strong> ${new Date(event.startDate).toDateString()}</p>
-          <p><strong>Venue:</strong> ${event.venue || event.city || 'TBA'}</p>
+          <p><strong>Venue:</strong> ${event.venue || event.city || "TBA"}</p>
           <p style="color:#1FA6A0;">See you there!</p>
         </div>
       </div>`,
@@ -108,20 +131,31 @@ const sendRegistrationConfirmation = (to, firstName, event) =>
 // ─── Sponsor/Partner Inquiry Alert ────────────────────────
 const sendInquiryAlert = (adminEmail, inquiryType, data) =>
   sendEmail({
-    to: adminEmail, templateType: 'inquiry_alert',
+    to: adminEmail,
+    templateType: "inquiry_alert",
     subject: `New ${inquiryType} Inquiry — ${data.companyName || data.name}`,
     html: `
       <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;padding:24px;">
         <h3 style="color:#0B2C4D;">New ${inquiryType} Inquiry Received</h3>
         <table style="width:100%;border-collapse:collapse;">
-          ${Object.entries(data).map(([k, v]) => `
+          ${Object.entries(data)
+            .map(
+              ([k, v]) => `
             <tr>
               <td style="padding:8px;border:1px solid #ddd;font-weight:bold;width:140px;">${k}</td>
               <td style="padding:8px;border:1px solid #ddd;">${v}</td>
-            </tr>`).join('')}
+            </tr>`,
+            )
+            .join("")}
         </table>
         <p style="margin-top:24px;">Login to admin panel to review.</p>
       </div>`,
   });
 
-module.exports = { sendEmail, sendOTPEmail, sendEventInvite, sendRegistrationConfirmation, sendInquiryAlert };
+module.exports = {
+  sendEmail,
+  sendOTPEmail,
+  sendEventInvite,
+  sendRegistrationConfirmation,
+  sendInquiryAlert,
+};

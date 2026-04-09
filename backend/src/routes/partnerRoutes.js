@@ -4,7 +4,7 @@ const sequelize = require("../config/database");
 const { DataTypes } = require("sequelize");
 const { sendInquiryAlert } = require("../services/emailService");
 const { authenticate, adminOnly } = require("../middleware/authMiddleware");
-
+const partnerController = require("../controllers/partnerController");
 // Inline model for Partner (similar to Sponsor)
 const Partner = sequelize.define(
   "Partner",
@@ -42,18 +42,17 @@ router.post("/inquiry", async (req, res) => {
       contactEmail: partner.contactEmail,
       type: partner.partnerType || "N/A",
     }).catch(() => {});
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: "Thank you! We will be in touch.",
-        data: partner,
-      });
+    res.status(201).json({
+      success: true,
+      message: "Thank you! We will be in touch.",
+      data: partner,
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
 });
-
+// ✅ NEW (NO UPLOAD)
+router.post("/register", partnerController.registerPartner);
 // Admin: Get all
 router.get("/", authenticate, adminOnly, async (req, res) => {
   try {

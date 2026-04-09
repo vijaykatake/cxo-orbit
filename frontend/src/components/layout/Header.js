@@ -3,6 +3,7 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { FiMenu, FiX } from "react-icons/fi";
 import logo from "../../assets/COX_Logo01.jpeg";
+import PartnerRegistrationModal from "../modal/PartnerRegistrationModal";
 
 const navLinks = [
   { to: "/", label: "Home" },
@@ -16,6 +17,7 @@ const navLinks = [
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [openPartnerModal, setOpenPartnerModal] = useState(false);
   const { user, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
 
@@ -93,12 +95,13 @@ export default function Header() {
                 Member Login & Rewards
               </Link>
 
-              <Link
-                to="/community"
+              <button
+                onClick={() => setOpenPartnerModal(true)}
+                to="/partner-with-us"
                 className="bg-soft-gold text-royal-blue text-sm px-4 py-2 rounded font-medium hover:opacity-90"
               >
                 Partner With Us
-              </Link>
+              </button>
             </>
           )}
         </div>
@@ -173,6 +176,11 @@ export default function Header() {
           )}
         </div>
       )}
+      {/* ✅ ADD HERE */}
+      <PartnerRegistrationModal
+        isOpen={openPartnerModal}
+        onClose={() => setOpenPartnerModal(false)}
+      />
     </header>
   );
 }

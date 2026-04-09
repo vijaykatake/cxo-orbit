@@ -1,5 +1,5 @@
 git add .
-git commit -m "Contact & Partners Completed"
+git commit -m "Home Page Completed To Latest News."
 git push
 
 
@@ -15,3 +15,21 @@ https://cxo-orbit-frontend.onrender.com
 -- Admin Login
  admin@cxoorbit.com
  Admin@123
+ -- Gmail 
+CXOOrbit@gmail.com
+Rahul+}2026
+eymf rspz tkbg itgu
+www.cxoorbitglobal.com
+Subodh@
+Accounts@
+Partner@
+Producer@
+
+
+
+Remove-Item -Recurse -Force node_modules
+Remove-Item package-lock.json
+npm install
+npm start
+
+ npm run dev
