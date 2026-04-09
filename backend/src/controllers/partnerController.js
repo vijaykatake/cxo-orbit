@@ -36,9 +36,9 @@ exports.registerPartner = async (req, res) => {
     });
     // Send Welcome Email
     // fire-and-forget email (non-blocking)
-    try {
-      await Promise.race([
-        emailService.sendEmail({
+    setImmediate(async () => {
+      try {
+        await emailService.sendEmail({
           to: email,
           subject:
             "Welcome to CXO Orbit Global – Partnership Registration Received",
@@ -50,18 +50,13 @@ exports.registerPartner = async (req, res) => {
         <br/>
         <p>Warm regards,<br/>Team CXO Orbit Global</p>
       `,
-        }),
+        });
 
-        // ⏱ timeout fallback (VERY IMPORTANT)
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error("Email timeout")), 8000),
-        ),
-      ]);
-
-      console.log("✅ Email sent");
-    } catch (err) {
-      console.error("❌ Email failed but continuing:", err.message);
-    }
+        console.log("✅ Email sent");
+      } catch (err) {
+        console.error("❌ Email failed:", err.message);
+      }
+    });
   } catch (error) {
     console.error("Partner Registration Error:", error);
     return res.status(500).json({
