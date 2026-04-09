@@ -29,7 +29,11 @@ exports.registerPartner = async (req, res) => {
         linkedin_consent === "true" || linkedin_consent === true,
       password: null,
     });
-
+    res.status(201).json({
+      success: true,
+      message: "Partner registered successfully",
+      data: partner,
+    });
     // Send Welcome Email
     // fire-and-forget email (non-blocking)
     try {
@@ -58,12 +62,6 @@ exports.registerPartner = async (req, res) => {
     } catch (err) {
       console.error("❌ Email failed but continuing:", err.message);
     }
-
-    return res.status(201).json({
-      success: true,
-      message: "Partner registered successfully",
-      data: partner,
-    });
   } catch (error) {
     console.error("Partner Registration Error:", error);
     return res.status(500).json({
