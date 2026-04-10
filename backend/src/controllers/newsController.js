@@ -17,6 +17,59 @@ const generateSlug = (title) => {
 // ===============================
 exports.createNews = async (req, res) => {
   try {
+    const { title, info, date, venue, address, link, gallery = [] } = req.body;
+
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
+
+    // ✅ Validate image
+    if (!req.file) {
+      return res.status(400).json({
+        error: "Image is required",
+      });
+    }
+
+    // ✅ Cloudinary URL (IMPORTANT CHANGE)
+    const main_image = req.file.path;
+
+    const slug = generateSlug(title);
+
+    const news = await News.create({
+      title,
+      slug,
+      info,
+      date,
+      venue,
+      address,
+      link,
+      main_image,
+    });
+
+    // ✅ Gallery stays SAME (you already store URLs)
+    if (gallery && gallery.length > 0) {
+      const galleryData = gallery.map((img) => ({
+        news_id: news.id,
+        image_url: img,
+      }));
+
+      await NewsGallery.bulkCreate(galleryData);
+    }
+
+    res.json({
+      message: "News created successfully",
+      data: news,
+    });
+  } catch (error) {
+    console.error("CREATE NEWS ERROR:", error);
+
+    res.status(500).json({
+      error: "Internal Server Error",
+      details: error.message,
+    });
+  }
+};
+exports.createNewsOLD = async (req, res) => {
+  try {
     const multer = require("multer");
     const path = require("path");
     const fs = require("fs");
@@ -434,7 +487,7 @@ exports.getHomePageNews = async (req, res) => {
 
       return {
         ...data,
-        main_image: data.main_image ? BASE_URL + data.main_image : null,
+        main_image: data.main_image ? data.main_image : null,
         gallery: data.gallery
           ? data.gallery.map((g) => BASE_URL + g.image_url)
           : [],
