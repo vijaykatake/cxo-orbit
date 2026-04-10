@@ -1,5 +1,5 @@
 git add .
-git commit -m "Join As CXO Member - Tital Updated"
+git commit -m "Upcomming Events: Connected To Home Page."
 git push
 
 

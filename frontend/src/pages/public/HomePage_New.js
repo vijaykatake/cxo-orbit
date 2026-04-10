@@ -1,9 +1,6 @@
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
-import api from "../../api";
-import { format } from "date-fns";
-import { FiCalendar, FiMapPin, FiArrowRight } from "react-icons/fi";
 import LatestNews from "../../components/home/LatestNews";
+
 // ✅ Import Upcoming Images
 import Upcomming01 from "../../assets/Tables/Upcomming/Beyond Cost Savings.jpg";
 import Upcomming02 from "../../assets/Tables/Upcomming/Infrastructure2026.png";
@@ -15,14 +12,6 @@ import Upcomming07 from "../../assets/Tables/Upcomming/WareFare.png";
 import Upcomming08 from "../../assets/Tables/Upcomming/Balancing.jpg";
 
 export default function HomePage() {
-  // const [events, setEvents] = useState([]);
-
-  // useEffect(() => {
-  //   api
-  //     .get("/events?status=published")
-  //     .then((res) => setEvents(res.data.data?.slice(0, 3) || []))
-  //     .catch(() => {});
-  // }, []);
   /* =========================
      ROUND TABLE DATA (Imported)
   ========================= */
@@ -100,6 +89,7 @@ export default function HomePage() {
       url: "https://forms.gle/CFTWUnhL4ZDCgu6R6",
     },
   ];
+
   return (
     <div>
       {/* ── Hero ───────────────── */}
@@ -132,10 +122,11 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ── Latest News (MATCHED STYLE) ───────────────── */}
+      {/* ── Latest News ───────────────── */}
       <div className="py-2">
         <LatestNews />
       </div>
+
       {/* ── Upcoming Round Tables (NEW) ───────────────── */}
       <section className="py-6 px-4 bg-gray-50">
         <div className="max-w-7xl mx-auto">
