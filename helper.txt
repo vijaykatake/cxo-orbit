@@ -1,5 +1,5 @@
 git add .
-git commit -m "Partner Registeration Successful. Email Error."
+git commit -m "Join As CXO Member - Tital Updated"
 git push
 
 

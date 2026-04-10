@@ -125,8 +125,9 @@ export default function RegisterMemberModal({ open, setOpen }) {
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-lg w-full max-w-5xl p-6 overflow-y-auto max-h-[90vh]">
-        <h2 className="text-3xl font-bold text-[#0B2C4D] mb-6">
-          Advisory Members
+        <h2 className="text-3xl font-bold text-[#0B2C4D] mb-6 inline-block text-center">
+          Join As CXO Member
+          <span className="block h-[3px] w-20 mx-auto bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 mt-2 rounded"></span>
         </h2>
 
         {errors.api && <p className="text-red-500">{errors.api}</p>}
