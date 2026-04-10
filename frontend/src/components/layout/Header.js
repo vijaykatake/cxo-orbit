@@ -92,7 +92,7 @@ export default function Header() {
                 to="/portal/login"
                 className="text-white hover:text-soft-gold text-sm transition-colors"
               >
-                Member Login & Rewards
+                Member Sign In & Rewards
               </Link>
 
               <button

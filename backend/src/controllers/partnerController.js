@@ -45,7 +45,6 @@ exports.registerPartner = async (req, res) => {
           html: `
         <p>Dear ${name},</p>
         <p>Thank you for expressing your interest in partnering with CXO Orbit Global.</p>
-        <p>We are delighted to connect with leaders and organizations who share our vision.</p>
         <p>Our team will connect with you shortly.</p>
         <br/>
         <p>Warm regards,<br/>Team CXO Orbit Global</p>

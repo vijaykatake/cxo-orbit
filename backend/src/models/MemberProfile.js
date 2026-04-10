@@ -14,7 +14,21 @@ const MemberProfile = sequelize.define(
       type: DataTypes.UUID,
       allowNull: false,
     },
+    // ✅ ADD THESE 3 FIELDS HERE
+    organization: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
 
+    industry: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+
+    LinkedIn: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
     designation: {
       type: DataTypes.STRING(150),
       allowNull: true,

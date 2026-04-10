@@ -38,7 +38,7 @@ export default function PartnersPage() {
           {/* EMAILS */}
           <div className="bg-white p-5 rounded-xl shadow-sm">
             <h3 className="font-semibold text-[rgb(31_166_160)] mb-2">Email</h3>
-            <p className="text-gray-500"></p>
+            <p className="text-gray-500">Conference@cxoorbitglobal.com</p>
             <p className="text-gray-500"></p>
           </div>
         </div>

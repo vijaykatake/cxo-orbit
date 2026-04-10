@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const MemberProfile = require("../models/MemberProfile");
 const { sendOTPEmail } = require("../services/emailService");
-
+const emailService = require("../services/emailService");
 // Generate 6-digit OTP
 const generateOTP = () =>
   Math.floor(100000 + Math.random() * 900000).toString();
@@ -203,6 +203,8 @@ const registerMember = async (req, res) => {
       lastName,
       personalEmail,
       officialEmail,
+      organization, // ✅ ADD
+      industry, // ✅ ADD
       designation,
       department,
       mobile,
@@ -213,6 +215,7 @@ const registerMember = async (req, res) => {
       country,
       state,
       city,
+      linkedIn, // ✅ ADD
       password, // ✅ NEW
     } = req.body;
 
@@ -255,6 +258,9 @@ const registerMember = async (req, res) => {
     await MemberProfile.create({
       user_id: user.id,
 
+      organization: req.body.organization || null, // ✅ ADD
+      industry: req.body.industry || null, // ✅ ADD
+
       designation: designation || null,
       department: department || null,
 
@@ -264,15 +270,112 @@ const registerMember = async (req, res) => {
       mobile: mobile || null,
       experience_years: experience ? parseInt(experience) : null,
 
-      birth_date: birthDate || null,
-      anniversary_date: anniversaryDate || null,
+      birth_date: birthDate
+        ? new Date(birthDate).toISOString().split("T")[0]
+        : null, // ✅ FIX
+
+      anniversary_date: anniversaryDate
+        ? new Date(anniversaryDate).toISOString().split("T")[0]
+        : null, // ✅ FIX
 
       gender: gender || null,
       country: country || null,
       state: state || null,
       city: city || null,
-    });
 
+      LinkedIn: req.body.linkedIn || null, // ✅ ADD (CASE SENSITIVE)
+    });
+    setImmediate(async () => {
+      try {
+        await emailService.sendEmail({
+          to: personalEmail,
+          subject: "Welcome to CXO Orbit Global Community 🚀",
+          html: `
+        <div style="font-family: Arial, sans-serif; line-height:1.6; color:#333;">
+          
+          <p>Dear ${firstName} ${lastName},</p>
+
+          <p>
+            We are absolutely delighted to officially welcome you to the 
+            <strong>CXO Orbit Global Community</strong>!
+          </p>
+
+          <p>
+            Your enthusiasm and leadership mindset are what make this ecosystem powerful,
+            and we’re excited to have you onboard.
+          </p>
+
+          <h3 style="color:#0B2C4D;">How CXO Orbit Elevates You</h3>
+
+          <h4>1. Networking & Knowledge</h4>
+          <ul>
+            <li>Be part of a trusted, vendor-free network of CXOs</li>
+            <li>Connect with industry leaders and peers</li>
+            <li>Exclusive roundtables & leadership events</li>
+            <li>Collaboration & consulting opportunities</li>
+          </ul>
+
+          <h4>2. Personal Growth & Branding</h4>
+          <ul>
+            <li>Speaking opportunities & panel discussions</li>
+            <li>Support for LinkedIn branding & storytelling</li>
+            <li>Access to curated insights & reports</li>
+          </ul>
+
+          <h4>3. Giving Back & Influence</h4>
+          <ul>
+            <li>Mentor emerging leaders</li>
+            <li>Co-create playbooks & thought leadership</li>
+            <li>Lead impactful discussions</li>
+          </ul>
+
+          <h3 style="color:#0B2C4D;">Member Privileges</h3>
+          <ul>
+            <li>Travel & stay benefits (Flights & Hotels)</li>
+            <li>Premium lifestyle & brand collaborations</li>
+            <li>Education & wellness offers</li>
+            <li>Custom LinkedIn content support</li>
+          </ul>
+
+          <p>
+            As a token of appreciation, a welcome gift will be shared with you shortly.
+          </p>
+
+          <p>
+            <strong>Registered Organization:</strong> ${organization || "N/A"}
+          </p>
+
+          <p>
+            Join our community on LinkedIn:
+            <br/>
+            <a href="https://www.linkedin.com/groups/15057005/" target="_blank">
+              CXO Orbit Community
+            </a>
+          </p>
+
+          <br/>
+
+          <p>
+            Once again, welcome to CXO Orbit — where leadership meets influence.
+          </p>
+            <div style="margin-top:20px; font-size:14px;">
+                <p><strong>Thanks & Regards,</strong></p>
+                <p style="margin:0;"><strong>Mansi Borkhetaria</strong></p>
+                <p style="margin:0;">Asst. Manager - Community</p>
+                <p style="margin:0;">📞 +91-9619273892</p>
+                <p style="margin:0;">🌐 www.kestoneglobal.com</p>
+                <p style="margin:0;">📍 Mumbai, India</p>
+          </div>
+
+        </div>
+      `,
+        });
+
+        console.log("✅ Welcome email sent");
+      } catch (err) {
+        console.error("❌ Email failed:", err.message);
+      }
+    });
     res.json({
       success: true,
       message: "Registration submitted for approval",

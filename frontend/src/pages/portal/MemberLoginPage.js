@@ -4,11 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
+import RegisterMemberModal from "../../components/modal/RegisterMemberModal";
 
 export default function MemberLoginPage() {
   const navigate = useNavigate();
   const { login, user } = useAuth();
-
+  const [openRegisterModal, setOpenRegisterModal] = useState(false);
   const isLocal = window.location.hostname === "localhost";
 
   const [form, setForm] = useState({
@@ -52,7 +53,7 @@ export default function MemberLoginPage() {
     <div className="flex items-center justify-center min-h-[80vh] px-4">
       <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-md">
         <h2 className="text-2xl font-bold text-royal-blue mb-6 text-center">
-          Member Login
+          Member Sign In
         </h2>
 
         <input
@@ -93,7 +94,21 @@ export default function MemberLoginPage() {
         >
           {loading ? "Logging in..." : "Login"}
         </button>
+        <p className="text-sm text-center mt-4">
+          Not Registered?{" "}
+          <span
+            onClick={() => setOpenRegisterModal(true)}
+            className="font-bold text-lg cursor-pointer hover:underline"
+            style={{ color: "rgb(11 44 77 / 1)" }}
+          >
+            Sign Up Now
+          </span>
+        </p>
       </div>
+      <RegisterMemberModal
+        open={openRegisterModal}
+        setOpen={setOpenRegisterModal}
+      />
     </div>
   );
 }
