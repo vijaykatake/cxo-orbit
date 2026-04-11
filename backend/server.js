@@ -1,16 +1,38 @@
 require("dotenv").config();
+
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const path = require("path");
+const fs = require("fs");
+const rateLimit = require("express-rate-limit");
 
 const sequelize = require("./src/config/database");
+
+// ─── App Init ─────────────────────────────────────────────
+const app = express();
+
+// ✅ TRUST PROXY (Render / Production fix)
+app.set("trust proxy", 1);
+
+// ─── Rate Limiter ─────────────────────────────────────────
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 200, // limit each IP
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+// ─── Config ───────────────────────────────────────────────
 const SERVER_URL =
   process.env.SERVER_URL ||
   process.env.REACT_APP_API_URL ||
   "http://localhost:5000";
-// Route imports
+
+const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
+
+// ─── Route Imports ────────────────────────────────────────
 const authRoutes = require("./src/routes/authRoutes");
 const eventRoutes = require("./src/routes/eventRoutes");
 const memberRoutes = require("./src/routes/memberRoutes");
@@ -21,16 +43,14 @@ const emailRoutes = require("./src/routes/emailRoutes");
 const cmsRoutes = require("./src/routes/cmsRoutes");
 const newsRoutes = require("./src/routes/newsRoutes");
 
-const app = express();
-
-// ─── Middleware ───────────────────────────────────────────
-const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000";
+// ─── Security Middleware ──────────────────────────────────
 app.use(
   helmet({
-    crossOriginResourcePolicy: false, // ✅ allow external images
+    crossOriginResourcePolicy: false, // allow external images (Cloudinary etc.)
   }),
 );
 
+// ─── CORS ─────────────────────────────────────────────────
 app.use(
   cors({
     origin: [CLIENT_URL],
@@ -41,31 +61,31 @@ app.use(
 
 app.options("*", cors());
 
-// app.use((req, res, next) => {
-//   res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
-//   next();
-// });
-
+// ─── Logging ──────────────────────────────────────────────
 app.use(morgan("dev"));
-app.use(express.json());
+
+// ─── Body Parsers ─────────────────────────────────────────
+app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// Static uploads
-const fs = require("fs");
+// ─── Rate Limiter (after parsers) ─────────────────────────
+app.use(limiter);
+
+// ─── Static Uploads (Legacy / Optional) ───────────────────
 const uploadDir = path.join(__dirname, "uploads/NewImgUpload");
 
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
-  console.log("✅ Upload folder created at server start:", uploadDir);
+  console.log("✅ Upload folder created:", uploadDir);
 } else {
-  console.log("📁 Upload folder already exists");
+  console.log("📁 Upload folder exists");
 }
+
 app.use(
   "/uploads",
   express.static(path.join(__dirname, "uploads"), {
     setHeaders: (res) => {
       res.setHeader("Access-Control-Allow-Origin", "*");
-      // res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
     },
   }),
 );
@@ -79,10 +99,9 @@ app.use("/api/partners", partnerRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/email", emailRoutes);
 app.use("/api/cms", cmsRoutes);
-// app.use("/uploads", require("express").static("uploads"));
-// ✅ CMS News Page
 app.use("/api", newsRoutes);
-// Health check
+
+// ─── Health Check ─────────────────────────────────────────
 app.get("/api/health", (req, res) => {
   res.json({
     status: "OK",
@@ -91,21 +110,25 @@ app.get("/api/health", (req, res) => {
   });
 });
 
-// 404 handler
+// ─── 404 Handler ──────────────────────────────────────────
 app.use((req, res) => {
-  res.status(404).json({ success: false, message: "Route not found" });
+  res.status(404).json({
+    success: false,
+    message: "Route not found",
+  });
 });
 
-// Global error handler
+// ─── Global Error Handler ─────────────────────────────────
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error("🔥 ERROR:", err.stack);
+
   res.status(err.status || 500).json({
     success: false,
     message: err.message || "Internal Server Error",
   });
 });
 
-// ─── Start Server ────────────────────────────────────────
+// ─── Start Server ─────────────────────────────────────────
 const PORT = process.env.PORT || 5000;
 
 sequelize
@@ -116,7 +139,7 @@ sequelize
   })
   .then(() => {
     app.listen(PORT, () => {
-      console.log(`🚀 Server running at http://localhost:${PORT}`);
+      console.log(`🚀 Server running at ${SERVER_URL}`);
     });
   })
   .catch((err) => {
