@@ -104,12 +104,12 @@ export default function Sidebar() {
                 label="Sponsors"
                 collapsed={collapsed}
               />
-              <MenuItem
+              {/* <MenuItem
                 to="/cms/insights"
                 icon="fa-chart-line"
                 label="Insights"
                 collapsed={collapsed}
-              />
+              /> */}
             </div>
           )}
 

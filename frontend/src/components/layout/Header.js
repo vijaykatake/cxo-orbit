@@ -11,7 +11,7 @@ const navLinks = [
   { to: "/events", label: "Conferences & Events" },
   // { to: "/community", label: "CXO Community" },
   { to: "/sponsors", label: "Partners" },
-  { to: "/insights", label: "Insights" },
+  // { to: "/insights", label: "Insights" },
   { to: "/contact", label: "Contact" },
 ];
 

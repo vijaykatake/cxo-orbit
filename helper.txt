@@ -1,5 +1,5 @@
 git add .
-git commit -m "Purvi Shah. Adviosary Memeber Added"
+git commit -m "Contact Form Email Sent"
 git push
 
 

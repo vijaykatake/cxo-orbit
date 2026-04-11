@@ -13,8 +13,9 @@ import Upcomming05 from "../../assets/Tables/Upcomming/Overseas.png";
 import Upcomming06 from "../../assets/Tables/Upcomming/ModernIT.jpg";
 import Upcomming07 from "../../assets/Tables/Upcomming/WareFare.png";
 import Upcomming08 from "../../assets/Tables/Upcomming/Balancing.jpg";
-
+import PartnerRegistrationModal from "../../components/modal/PartnerRegistrationModal";
 export default function HomePage() {
+  const [openPartnerModal, setOpenPartnerModal] = useState(false);
   // const [events, setEvents] = useState([]);
 
   // useEffect(() => {
@@ -125,9 +126,12 @@ export default function HomePage() {
               Join as CXO Member
             </Link>
 
-            <Link to="/sponsors" className="btn-secondary px-6 py-2 text-sm">
+            <button
+              onClick={() => setOpenPartnerModal(true)}
+              className="bg-soft-gold text-royal-blue text-sm px-4 py-2 rounded font-medium hover:opacity-90"
+            >
               Partner With Us
-            </Link>
+            </button>
           </div>
         </div>
       </section>
@@ -258,6 +262,10 @@ export default function HomePage() {
           </Link>
         </div>
       </section>
+      <PartnerRegistrationModal
+        isOpen={openPartnerModal}
+        onClose={() => setOpenPartnerModal(false)}
+      />
     </div>
   );
 }

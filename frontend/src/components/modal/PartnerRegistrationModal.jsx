@@ -97,9 +97,10 @@ export default function PartnerRegistrationModal({ isOpen, onClose }) {
         >
           ✕
         </button>
-
-        <h2 className="text-xl font-bold mb-4">Partner With Us</h2>
-
+        <h2 className="text-3xl font-bold text-[#0B2C4D] mb-6 inline-block text-center">
+          Partner With Us
+          <span className="block h-[3px] w-20 mx-auto bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 mt-2 rounded"></span>
+        </h2>
         {message && <p className="mb-3 text-sm">{message}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-3">

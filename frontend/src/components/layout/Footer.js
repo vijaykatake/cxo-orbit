@@ -1,5 +1,10 @@
 import { Link } from "react-router-dom";
-
+import {
+  FaLinkedinIn,
+  FaWhatsapp,
+  FaFacebookF,
+  FaInstagram,
+} from "react-icons/fa";
 export default function Footer() {
   return (
     <footer className="bg-royal-blue text-white mt-16">
@@ -52,11 +57,11 @@ export default function Footer() {
                 Advisory Board
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link to="/insights" className="hover:text-soft-gold">
                 Insights & Media
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link to="/contact" className="hover:text-soft-gold">
                 Contact Us
@@ -80,18 +85,59 @@ export default function Footer() {
           </ul>
         </div>
       </div>
-      <div className="border-t border-blue-800 py-4 text-center text-gray-400 text-xs">
-        <p>
-          © {new Date().getFullYear()} CXO Orbit Global. All rights reserved.
-          &nbsp;|&nbsp;
-          <Link to="/privacy" className="hover:text-soft-gold">
-            Privacy Policy
-          </Link>{" "}
-          &nbsp;|&nbsp;
-          <Link to="/terms" className="hover:text-soft-gold">
-            Terms of Use
-          </Link>
-        </p>
+      <div className="border-t border-blue-800 py-4 px-4 text-center">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between text-center gap-4 text-white text-xs">
+          {/* LEFT TEXT */}
+          <p className="text-center md:text-left text-white text-xs">
+            Copyright © 2026 Cxo Orbit Global. All rights reserved.
+            &nbsp;|&nbsp;
+            <Link
+              to="/privacy"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-soft-gold"
+            >
+              Privacy Policy
+            </Link>
+            &nbsp;|&nbsp;
+            <Link
+              to="/terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-soft-gold"
+            >
+              Terms of Use
+            </Link>
+          </p>
+
+          {/* RIGHT SOCIAL ICONS (LIKE IMAGE) */}
+          <div className="flex gap-3">
+            {/* LinkedIn */}
+            <div className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-400 hover:border-soft-gold hover:text-soft-gold cursor-pointer transition">
+              <FaLinkedinIn size={14} />
+            </div>
+
+            {/* WhatsApp */}
+            <a
+              href="https://wa.me/919881230663"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-400 hover:border-soft-gold hover:text-soft-gold cursor-pointer transition"
+            >
+              <FaWhatsapp size={14} />
+            </a>
+
+            {/* Facebook */}
+            <div className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-400 hover:border-soft-gold hover:text-soft-gold cursor-pointer transition">
+              <FaFacebookF size={14} />
+            </div>
+
+            {/* Instagram */}
+            <div className="w-9 h-9 flex items-center justify-center rounded-full border border-gray-400 hover:border-soft-gold hover:text-soft-gold cursor-pointer transition">
+              <FaInstagram size={14} />
+            </div>
+          </div>
+        </div>
       </div>
     </footer>
   );

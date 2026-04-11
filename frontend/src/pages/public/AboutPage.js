@@ -25,38 +25,38 @@ export default function AboutPage() {
 
   const advisoryMembers = [
     {
-      name: "Randhir Padwal",
+      name: "Dr. Randhir Padwal",
       image: randhir,
-      role: "Advisory Member",
+      role: "Mumbai",
       desc: "Strategic advisor with strong experience in enterprise leadership.",
     },
     {
       name: "Sandesh Yadav",
       image: Sudesh,
-      role: "Advisory Member",
+      role: "Pune",
       desc: "Guides CXO engagement and ecosystem partnerships.",
     },
     {
       name: "Rahul Mergu",
       image: Rahul,
-      role: "Advisory Member",
+      role: "Pune",
       desc: `Rahul Shivram Mergu is a seasoned professional...`,
     },
     {
       name: "Bhushan Patil",
       image: bhushan,
-      role: "Advisory Member",
+      role: "Pune",
       desc: "Supports strategic growth and executive networking.",
     },
     {
       name: "Prasad Tripurari",
       image: PrasadT,
-      role: "Advisory Member",
+      role: "Hydrabd",
       desc: `Prasad Tripurari is a Transformational CTO...`,
     },
     {
       name: "Purvi Shah",
-      role: "Advisory Member",
+      role: "Mumbai",
       image: Purvi,
       desc: `
       Drives enterprise value through IT strategy and digital transformation.
@@ -66,13 +66,13 @@ export default function AboutPage() {
     {
       name: "Sangeeta Kant",
       image: null,
-      role: "Advisory Member",
+      role: "Singapur",
       desc: "Focuses on leadership development and CXO collaboration.",
     },
     {
       name: "Sagar Mulik",
       image: null,
-      role: "Advisory Member",
+      role: "Dubai",
       desc: "Expert in enterprise operations and scaling organizations.",
     },
   ];

@@ -1,4 +1,77 @@
+import { useState } from "react";
+import api from "../../api";
+
 export default function PartnersPage() {
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    mobile: "",
+    subject: "",
+    message: "",
+  });
+
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const validate = () => {
+    let err = {};
+
+    if (!form.name || form.name.length < 3) {
+      err.name = "Full name must be at least 3 characters";
+    }
+
+    if (!form.email || !/^\S+@\S+\.\S+$/.test(form.email)) {
+      err.email = "Invalid email address";
+    }
+
+    if (!form.mobile || !/^\d{10}$/.test(form.mobile)) {
+      err.mobile = "Mobile must be 10 digits";
+    }
+
+    if (!form.subject || form.subject.length < 10) {
+      err.subject = "Subject must be at least 10 characters";
+    }
+
+    if (!form.message || form.message.length < 15) {
+      err.message = "Message must be at least 15 characters";
+    }
+
+    setErrors(err);
+    return Object.keys(err).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validate()) return;
+
+    try {
+      setLoading(true);
+
+      await api.post("/email/contact", form);
+
+      alert("Message sent successfully!");
+
+      setForm({
+        name: "",
+        email: "",
+        mobile: "",
+        subject: "",
+        message: "",
+      });
+
+      setErrors({});
+    } catch (err) {
+      alert("Failed to send message");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-12">
       {/* TITLE */}
@@ -39,58 +112,98 @@ export default function PartnersPage() {
           <div className="bg-white p-5 rounded-xl shadow-sm">
             <h3 className="font-semibold text-[rgb(31_166_160)] mb-2">Email</h3>
             <p className="text-gray-500">Conference@cxoorbitglobal.com</p>
-            <p className="text-gray-500"></p>
           </div>
         </div>
 
         {/* ================= RIGHT ================= */}
         <div className="bg-white p-6 rounded-xl shadow-md">
-          <h3 className="text-xl font-semibold text-[#0B2C4D] mb-4">
+          <h2 className="text-3xl font-bold text-[#0B2C4D] mb-6 inline-block text-center">
             Contact Form
-          </h3>
-
-          <form className="space-y-4">
+            <span className="block h-[3px] w-20 mx-auto bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 mt-2 rounded"></span>
+          </h2>
+          <form onSubmit={handleSubmit} className="space-y-4">
             {/* FULL NAME */}
-            <input
-              type="text"
-              placeholder="Full Name"
-              className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:border-[rgb(31_166_160)]"
-            />
+            <div>
+              <input
+                type="text"
+                name="name"
+                value={form.name}
+                onChange={handleChange}
+                placeholder="Full Name"
+                className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:border-[rgb(31_166_160)]"
+              />
+              {errors.name && (
+                <p className="text-red-500 text-xs">{errors.name}</p>
+              )}
+            </div>
 
             {/* EMAIL */}
-            <input
-              type="email"
-              placeholder="Email"
-              className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:border-[rgb(31_166_160)]"
-            />
+            <div>
+              <input
+                type="email"
+                name="email"
+                value={form.email}
+                onChange={handleChange}
+                placeholder="Email"
+                className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:border-[rgb(31_166_160)]"
+              />
+              {errors.email && (
+                <p className="text-red-500 text-xs">{errors.email}</p>
+              )}
+            </div>
 
             {/* MOBILE */}
-            <input
-              type="text"
-              placeholder="Mobile"
-              className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:border-[rgb(31_166_160)]"
-            />
+            <div>
+              <input
+                type="text"
+                name="mobile"
+                value={form.mobile}
+                onChange={handleChange}
+                placeholder="Mobile"
+                className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:border-[rgb(31_166_160)]"
+              />
+              {errors.mobile && (
+                <p className="text-red-500 text-xs">{errors.mobile}</p>
+              )}
+            </div>
 
             {/* SUBJECT */}
-            <input
-              type="text"
-              placeholder="Subject"
-              className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:border-[rgb(31_166_160)]"
-            />
+            <div>
+              <input
+                type="text"
+                name="subject"
+                value={form.subject}
+                onChange={handleChange}
+                placeholder="Subject"
+                className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:border-[rgb(31_166_160)]"
+              />
+              {errors.subject && (
+                <p className="text-red-500 text-xs">{errors.subject}</p>
+              )}
+            </div>
 
             {/* MESSAGE */}
-            <textarea
-              rows="4"
-              placeholder="Message"
-              className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:border-[rgb(31_166_160)]"
-            ></textarea>
+            <div>
+              <textarea
+                name="message"
+                value={form.message}
+                onChange={handleChange}
+                rows="4"
+                placeholder="Message"
+                className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:border-[rgb(31_166_160)]"
+              ></textarea>
+              {errors.message && (
+                <p className="text-red-500 text-xs">{errors.message}</p>
+              )}
+            </div>
 
             {/* BUTTON */}
             <button
               type="submit"
+              disabled={loading}
               className="w-full bg-[#0B2C4D] text-white py-2 rounded hover:opacity-90 transition"
             >
-              Submit
+              {loading ? "Sending..." : "Submit"}
             </button>
           </form>
         </div>
