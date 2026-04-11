@@ -6,7 +6,7 @@ import bhushan from "../../assets/advisory/bhushan01.jpg";
 import randhir from "../../assets/advisory/randhir.jpeg";
 import Subodh from "../../assets/advisory/Rahul.jpeg";
 import PrasadT from "../../assets/advisory/PrasadT.jpeg";
-
+import Purvi from "../../assets/advisory/Purvi.jpeg";
 export default function AboutPage() {
   const teamMembers = [
     {
@@ -53,6 +53,15 @@ export default function AboutPage() {
       image: PrasadT,
       role: "Advisory Member",
       desc: `Prasad Tripurari is a Transformational CTO...`,
+    },
+    {
+      name: "Purvi Shah",
+      role: "Advisory Member",
+      image: Purvi,
+      desc: `
+      Drives enterprise value through IT strategy and digital transformation.
+      Dynamic CIO with over 20 years of diverse experience spanning Real Estate, Banking, Telecom, Vehicle Finance, and Paper Stationery Exports. With over a decade of IT leadership in the Real Estate sector, I have driven digital transformation and technology strategy through the successful implementation of Salesforce, SAP, and other enterprise solutions. Known for strategic thinking, business process clarity, and an analytical mindset, I combine innovation with governance to build high-performance teams, optimize costs, and enhance customer and partner experiences-delivering measurable business value through a structured approach to change management and digital excellence.
+•	Leadership Vision: I lead with the belief that technology transformation succeeds when innovation, process discipline, and people empowerment move in harmony.`,
     },
     {
       name: "Sangeeta Kant",
@@ -189,7 +198,9 @@ export default function AboutPage() {
         {/* OUR TEAM */}
         <section className="py-4">
           <div className="text-center mb-4">
-            <h2 className="text-3xl font-bold text-[#0B2C4D]">Our Team</h2>
+            <h2 className="text-3xl font-bold text-[#0B2C4D]">
+              Our Leadership Team
+            </h2>
             <div className="w-24 h-[2px] bg-[#D4AF37] mx-auto mt-2"></div>
           </div>
 
