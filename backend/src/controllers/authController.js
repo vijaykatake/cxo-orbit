@@ -194,17 +194,19 @@ const getMe = async (req, res) => {
 // ─────────────────────────────────────────────
 // Member Registration (UPDATED WITH PASSWORD)
 // ─────────────────────────────────────────────
+
 const registerMember = async (req, res) => {
   try {
     delete req.body.confirmPassword;
-    console.log("REQ BODY:", req.body); // ✅ ADD HERE
+    console.log("📥 REQ BODY:", req.body);
+
     const {
       firstName,
       lastName,
       personalEmail,
       officialEmail,
-      organization, // ✅ ADD
-      industry, // ✅ ADD
+      organization,
+      industry,
       designation,
       department,
       mobile,
@@ -215,174 +217,210 @@ const registerMember = async (req, res) => {
       country,
       state,
       city,
-      linkedIn, // ✅ ADD
-      password, // ✅ NEW
+      linkedIn,
+      password,
     } = req.body;
 
-    if (!firstName || !lastName || !personalEmail || !password)
+    // ─── Step 1: Required fields ──────────────────────────
+    console.log("🔍 Step 1: Checking required fields...");
+    if (!firstName || !lastName || !personalEmail || !password) {
+      console.log("❌ Missing required fields:", {
+        firstName,
+        lastName,
+        personalEmail,
+        password: !!password,
+      });
       return res.status(400).json({
         success: false,
         message: "First name, last name, email and password are required",
       });
+    }
+    console.log("✅ Step 1 passed");
 
-    if (password.length < 5)
+    // ─── Step 2: Password length ──────────────────────────
+    console.log("🔍 Step 2: Checking password length:", password.length);
+    if (password.length < 5) {
+      console.log("❌ Password too short:", password.length);
       return res.status(400).json({
         success: false,
         message: "Password must be at least 5 characters",
       });
+    }
+    console.log("✅ Step 2 passed");
+    // -- Test Step
+    // ─── DEV ONLY: Auto-cleanup test user before re-registering ──
+    // ─── Auto-cleanup test user before re-registering ────────
+    console.log("🧹 Personal EmailID:", personalEmail);
+    if (personalEmail === "vijukatake@gmail.com") {
+      console.log("🧹 Auto-cleaning test user:", personalEmail);
 
-    const existing = await User.findOne({
-      where: { email: personalEmail },
-    });
+      const testUser = await User.findOne({ where: { email: personalEmail } });
 
-    if (existing)
+      if (testUser) {
+        console.log(
+          `🔍 Found user: ${testUser.id} — ${testUser.firstName} ${testUser.lastName}`,
+        );
+
+        const profileDeleted = await MemberProfile.destroy({
+          where: { user_id: testUser.id },
+        });
+        console.log(`🗑️ MemberProfile deleted: ${profileDeleted} row(s)`);
+
+        await User.destroy({ where: { id: testUser.id } });
+        console.log(`🗑️ User deleted: ${personalEmail}`);
+        console.log("✅ Cleanup complete — proceeding with fresh registration");
+      } else {
+        console.log("⚠️ No existing test user — skipping cleanup");
+      }
+    }
+    // ─── Step 3: Check existing user ─────────────────────
+    console.log("🔍 Step 3: Checking if email exists:", personalEmail);
+    const existing = await User.findOne({ where: { email: personalEmail } });
+    if (existing) {
+      console.log("❌ Email already registered:", personalEmail);
       return res.status(400).json({
         success: false,
         message: "Email already registered",
       });
+    }
+    console.log("✅ Step 3 passed — email is free");
 
-    // 🔐 HASH PASSWORD
+    // ─── Step 4: Hash password ────────────────────────────
+    console.log("🔍 Step 4: Hashing password...");
     const hashedPassword = await bcrypt.hash(password, 10);
+    console.log("✅ Step 4 passed — password hashed");
 
-    console.log("HASHED PASSWORD:", hashedPassword); // debug
-
+    // ─── Step 5: Create user ──────────────────────────────
+    console.log("🔍 Step 5: Creating user...");
     const user = await User.create({
       firstName,
       lastName,
       email: personalEmail,
-      passwordHash: hashedPassword, // ✅ THIS WAS MISSING
+      passwordHash: hashedPassword,
       role: "member",
       isVerified: false,
+    });
+    console.log("✅ Step 5 passed — user created:", user.id);
+
+    // ─── Step 6: Create member profile ───────────────────
+    console.log("🔍 Step 6: Creating member profile...");
+    console.log("Profile data:", {
+      organization,
+      industry,
+      designation,
+      department,
+      personalEmail,
+      officialEmail,
+      mobile,
+      experience,
+      birthDate,
+      anniversaryDate,
+      gender,
+      country,
+      state,
+      city,
+      linkedIn,
     });
 
     await MemberProfile.create({
       user_id: user.id,
-
-      organization: req.body.organization || null, // ✅ ADD
-      industry: req.body.industry || null, // ✅ ADD
-
+      organization: organization || null,
+      industry: industry || null,
       designation: designation || null,
       department: department || null,
-
       personal_email: personalEmail,
       official_email: officialEmail || null,
-
       mobile: mobile || null,
       experience_years: experience ? parseInt(experience) : null,
-
       birth_date: birthDate
         ? new Date(birthDate).toISOString().split("T")[0]
-        : null, // ✅ FIX
-
+        : null,
       anniversary_date: anniversaryDate
         ? new Date(anniversaryDate).toISOString().split("T")[0]
-        : null, // ✅ FIX
-
+        : null,
       gender: gender || null,
       country: country || null,
       state: state || null,
       city: city || null,
-
-      LinkedIn: req.body.linkedIn || null, // ✅ ADD (CASE SENSITIVE)
+      LinkedIn: linkedIn || null,
     });
+    console.log("✅ Step 6 passed — member profile created");
+
+    // ─── Step 7: Send welcome email ───────────────────────
+    console.log("🔍 Step 7: Queuing welcome email to:", personalEmail);
     setImmediate(async () => {
       try {
         await emailService.sendEmail({
           to: personalEmail,
           subject: "Welcome to CXO Orbit Global Community 🚀",
           html: `
-        <div style="font-family: Arial, sans-serif; line-height:1.6; color:#333;">
-          
-          <p>Dear ${firstName} ${lastName},</p>
+            <div style="font-family: Arial, sans-serif; line-height:1.6; color:#333;">
+              <p>Dear ${firstName} ${lastName},</p>
+              <p>We are absolutely delighted to officially welcome you to the <strong>CXO Orbit Global Community</strong>!</p>
+              <p>Your enthusiasm and leadership mindset are what make this ecosystem powerful, and we're excited to have you onboard.</p>
 
-          <p>
-            We are absolutely delighted to officially welcome you to the 
-            <strong>CXO Orbit Global Community</strong>!
-          </p>
+              <h3 style="color:#0B2C4D;">How CXO Orbit Elevates You</h3>
+              <h4>1. Networking & Knowledge</h4>
+              <ul>
+                <li>Be part of a trusted, vendor-free network of CXOs</li>
+                <li>Connect with industry leaders and peers</li>
+                <li>Exclusive roundtables & leadership events</li>
+                <li>Collaboration & consulting opportunities</li>
+              </ul>
+              <h4>2. Personal Growth & Branding</h4>
+              <ul>
+                <li>Speaking opportunities & panel discussions</li>
+                <li>Support for LinkedIn branding & storytelling</li>
+                <li>Access to curated insights & reports</li>
+              </ul>
+              <h4>3. Giving Back & Influence</h4>
+              <ul>
+                <li>Mentor emerging leaders</li>
+                <li>Co-create playbooks & thought leadership</li>
+                <li>Lead impactful discussions</li>
+              </ul>
 
-          <p>
-            Your enthusiasm and leadership mindset are what make this ecosystem powerful,
-            and we’re excited to have you onboard.
-          </p>
+              <h3 style="color:#0B2C4D;">Member Privileges</h3>
+              <ul>
+                <li>Travel & stay benefits (Flights & Hotels)</li>
+                <li>Premium lifestyle & brand collaborations</li>
+                <li>Education & wellness offers</li>
+                <li>Custom LinkedIn content support</li>
+              </ul>
 
-          <h3 style="color:#0B2C4D;">How CXO Orbit Elevates You</h3>
-
-          <h4>1. Networking & Knowledge</h4>
-          <ul>
-            <li>Be part of a trusted, vendor-free network of CXOs</li>
-            <li>Connect with industry leaders and peers</li>
-            <li>Exclusive roundtables & leadership events</li>
-            <li>Collaboration & consulting opportunities</li>
-          </ul>
-
-          <h4>2. Personal Growth & Branding</h4>
-          <ul>
-            <li>Speaking opportunities & panel discussions</li>
-            <li>Support for LinkedIn branding & storytelling</li>
-            <li>Access to curated insights & reports</li>
-          </ul>
-
-          <h4>3. Giving Back & Influence</h4>
-          <ul>
-            <li>Mentor emerging leaders</li>
-            <li>Co-create playbooks & thought leadership</li>
-            <li>Lead impactful discussions</li>
-          </ul>
-
-          <h3 style="color:#0B2C4D;">Member Privileges</h3>
-          <ul>
-            <li>Travel & stay benefits (Flights & Hotels)</li>
-            <li>Premium lifestyle & brand collaborations</li>
-            <li>Education & wellness offers</li>
-            <li>Custom LinkedIn content support</li>
-          </ul>
-
-          <p>
-            As a token of appreciation, a welcome gift will be shared with you shortly.
-          </p>
-
-          <p>
-            <strong>Registered Organization:</strong> ${organization || "N/A"}
-          </p>
-
-          <p>
-            Join our community on LinkedIn:
-            <br/>
-            <a href="https://www.linkedin.com/groups/15057005/" target="_blank">
-              CXO Orbit Community
-            </a>
-          </p>
-
-          <br/>
-
-          <p>
-            Once again, welcome to CXO Orbit — where leadership meets influence.
-          </p>
-            <div style="margin-top:20px; font-size:14px;">
+              <p>As a token of appreciation, a welcome gift will be shared with you shortly.</p>
+              <p><strong>Registered Organization:</strong> ${organization || "N/A"}</p>
+              <p>Join our community on LinkedIn:<br/>
+                <a href="https://www.linkedin.com/groups/15057005/" target="_blank">CXO Orbit Community</a>
+              </p>
+              <br/>
+              <p>Once again, welcome to CXO Orbit — where leadership meets influence.</p>
+              <div style="margin-top:20px; font-size:14px;">
                 <p><strong>Thanks & Regards,</strong></p>
                 <p style="margin:0;"><strong>Mansi Borkhetaria</strong></p>
                 <p style="margin:0;">Asst. Manager - Community</p>
                 <p style="margin:0;">📞 +91-9619273892</p>
                 <p style="margin:0;">🌐 www.kestoneglobal.com</p>
                 <p style="margin:0;">📍 Mumbai, India</p>
-          </div>
-
-        </div>
-      `,
+              </div>
+            </div>
+          `,
         });
-
-        console.log("✅ Welcome email sent");
+        console.log("✅ Welcome email sent to:", personalEmail);
       } catch (err) {
-        console.error("❌ Email failed:", err.message);
+        console.error("❌ Welcome email failed:", err.message);
       }
     });
+
+    // ─── Step 8: Respond ──────────────────────────────────
+    console.log("✅ Step 8: Sending success response");
     res.json({
       success: true,
       message: "Registration submitted for approval",
     });
   } catch (err) {
-    console.error(err);
-
+    console.error("🔥 registerMember CRASH at:", err.message);
+    console.error("🔥 Full error:", err);
     res.status(500).json({
       success: false,
       message: err.message,

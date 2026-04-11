@@ -2,12 +2,10 @@ const nodemailer = require("nodemailer");
 const EmailLog = require("../models/EmailLog");
 const { v4: uuidv4 } = require("uuid");
 
-// ─── Transporter Factory (lazy, validated) ────────────────
+// ─── Transporter Factory ──────────────────────────────────
 let transporter = null;
 
-const getTransporter = () => {
-  if (transporter) return transporter;
-
+const createTransporter = () => {
   const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
 
   if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
@@ -16,7 +14,7 @@ const getTransporter = () => {
     );
   }
 
-  transporter = nodemailer.createTransport({
+  return nodemailer.createTransport({
     host: SMTP_HOST,
     port: parseInt(SMTP_PORT) || 587,
     secure: false,
@@ -24,9 +22,26 @@ const getTransporter = () => {
     connectionTimeout: 15000,
     greetingTimeout: 15000,
     socketTimeout: 20000,
+    pool: false, // ✅ no persistent connection pool
+    tls: { rejectUnauthorized: false },
   });
+};
 
+const getTransporter = () => {
+  if (!transporter) {
+    transporter = createTransporter();
+  }
   return transporter;
+};
+
+// ✅ Reset transporter on failure so next send reconnects fresh
+const resetTransporter = () => {
+  if (transporter) {
+    try {
+      transporter.close();
+    } catch (_) {}
+    transporter = null;
+  }
 };
 
 // ─── Startup Verify ───────────────────────────────────────
@@ -36,14 +51,16 @@ const verifyMailer = () => {
       getTransporter().verify((err, success) => {
         if (err) {
           console.error("❌ SMTP verify failed:", err.message);
+          resetTransporter(); // ✅ reset so next attempt reconnects
           reject(err);
         } else {
-          console.log("✅ SMTP transporter ready");
+          console.log("✅ Brevo SMTP ready");
           resolve(success);
         }
       });
     } catch (err) {
       console.error("❌ SMTP config error:", err.message);
+      resetTransporter();
       reject(err);
     }
   });
@@ -81,7 +98,7 @@ const sendEmail = async ({
 
   try {
     await sendWithTimeout({
-      from: `"CXO Orbit Global" <${process.env.SMTP_USER}>`,
+      from: `"CXO Orbit Global" <${process.env.EMAIL_FROM}>`,
       to,
       subject,
       html,
@@ -104,6 +121,8 @@ const sendEmail = async ({
       `❌ sendEmail failed [${templateType}] to ${to}:`,
       err.message,
     );
+
+    resetTransporter(); // ✅ force fresh connection on next send
 
     await safeLog({
       id: logId,

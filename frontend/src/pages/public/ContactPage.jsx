@@ -3,11 +3,11 @@ import api from "../../api";
 
 export default function PartnersPage() {
   const [form, setForm] = useState({
-    name: "",
-    email: "",
-    mobile: "",
-    subject: "",
-    message: "",
+    name: "Vijay Katake",
+    email: "vijukatake@gmail.com",
+    mobile: "9604781258",
+    subject: "SMTP Error Subject",
+    message: "SMTP Error Message",
   });
 
   const [errors, setErrors] = useState({});

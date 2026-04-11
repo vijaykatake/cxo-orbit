@@ -3,12 +3,12 @@ import api from "../../api";
 
 export default function PartnerRegistrationModal({ isOpen, onClose }) {
   const [form, setForm] = useState({
-    name: "",
-    organization_name: "",
-    designation: "",
-    email: "",
-    mobile: "",
-    city: "",
+    name: "Vijay Katake",
+    organization_name: "Fullstack Freelance IT Professional",
+    designation: "Fullstack Developer",
+    email: "vijukatake@gmail.com",
+    mobile: "9604781258",
+    city: "Pune",
     linkedin_consent: false,
   });
 
@@ -72,13 +72,13 @@ export default function PartnerRegistrationModal({ isOpen, onClose }) {
       await api.post("/partners/register", form);
       setMessage("✅ Registration successful!");
       setForm({
-        name: "",
-        organization_name: "",
-        designation: "",
-        email: "",
-        mobile: "",
-        city: "",
-        linkedin_consent: false,
+        name: "Vijay Katake",
+        organization_name: "Software CXO ORBIT",
+        designation: "Fullstack Freelance IT Professional",
+        email: "vijukatake@gmail.com",
+        mobile: "9604781258",
+        city: "Pune",
+        linkedin_consent: true,
       });
     } catch (err) {
       setMessage("❌ Something went wrong");
