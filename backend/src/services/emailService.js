@@ -85,16 +85,26 @@ const sendEmail = async ({
 }) => {
   const logId = uuidv4();
 
-  const sendWithTimeout = (mailOptions, ms = 20000) =>
-    Promise.race([
-      getTransporter().sendMail(mailOptions),
-      new Promise((_, reject) =>
-        setTimeout(
-          () => reject(new Error(`sendMail timed out after ${ms}ms`)),
-          ms,
+  const sendWithTimeout = async (mailOptions, retries = 3) => {
+    try {
+      return await Promise.race([
+        getTransporter().sendMail(mailOptions),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error("sendMail timeout")), 20000),
         ),
-      ),
-    ]);
+      ]);
+    } catch (err) {
+      console.error("❌ Attempt failed:", err.message);
+
+      if (retries > 0) {
+        console.log(`🔁 Retrying email... (${retries})`);
+        resetTransporter(); // 🔥 VERY IMPORTANT
+        return sendWithTimeout(mailOptions, retries - 1);
+      }
+
+      throw err;
+    }
+  };
 
   try {
     await sendWithTimeout({
@@ -119,6 +129,7 @@ const sendEmail = async ({
   } catch (err) {
     console.error(
       `❌ sendEmail failed [${templateType}] to ${to}:`,
+      err.code,
       err.message,
     );
 
