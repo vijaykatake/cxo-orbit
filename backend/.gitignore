@@ -1,5 +1,25 @@
+# Dependencies
 node_modules/
+
+# Environment files (IMPORTANT)
 .env
+.env.*
+!.env.example
+
+# Uploads (user files)
 uploads/
+
+# Logs
 *.log
+logs/
+
+# Build files
 dist/
+build/
+
+# OS / Editor junk
+.DS_Store
+Thumbs.db
+
+# Optional: VSCode
+.vscode/
