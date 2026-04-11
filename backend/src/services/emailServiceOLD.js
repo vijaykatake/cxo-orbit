@@ -2,61 +2,18 @@ const nodemailer = require("nodemailer");
 const EmailLog = require("../models/EmailLog");
 const { v4: uuidv4 } = require("uuid");
 
-// ─── Transporter Factory (lazy, validated) ────────────────
-let transporter = null;
-
-const getTransporter = () => {
-  if (transporter) return transporter;
-
-  const { SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS } = process.env;
-
-  if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
-    throw new Error(
-      `Missing SMTP config — HOST:${SMTP_HOST} USER:${SMTP_USER} PASS:${SMTP_PASS ? "set" : "MISSING"}`,
-    );
-  }
-
-  transporter = nodemailer.createTransport({
-    host: SMTP_HOST,
-    port: parseInt(SMTP_PORT) || 587,
-    secure: false,
-    auth: { user: SMTP_USER, pass: SMTP_PASS },
-    connectionTimeout: 15000,
-    greetingTimeout: 15000,
-    socketTimeout: 20000,
-  });
-
-  return transporter;
-};
-
-// ─── Startup Verify ───────────────────────────────────────
-const verifyMailer = () => {
-  return new Promise((resolve, reject) => {
-    try {
-      getTransporter().verify((err, success) => {
-        if (err) {
-          console.error("❌ SMTP verify failed:", err.message);
-          reject(err);
-        } else {
-          console.log("✅ SMTP transporter ready");
-          resolve(success);
-        }
-      });
-    } catch (err) {
-      console.error("❌ SMTP config error:", err.message);
-      reject(err);
-    }
-  });
-};
-
-// ─── Safe EmailLog helper (never throws) ──────────────────
-const safeLog = async (payload) => {
-  try {
-    await EmailLog.create(payload);
-  } catch (dbErr) {
-    console.error("⚠️ EmailLog write failed:", dbErr.message);
-  }
-};
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: parseInt(process.env.SMTP_PORT) || 587,
+  secure: false,
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+  connectionTimeout: 10000, // 10 sec
+  greetingTimeout: 10000,
+  socketTimeout: 10000,
+});
 
 // ─── Generic Send Email ───────────────────────────────────
 const sendEmail = async ({
@@ -67,27 +24,15 @@ const sendEmail = async ({
   relatedId = null,
 }) => {
   const logId = uuidv4();
-
-  const sendWithTimeout = (mailOptions, ms = 20000) =>
-    Promise.race([
-      getTransporter().sendMail(mailOptions),
-      new Promise((_, reject) =>
-        setTimeout(
-          () => reject(new Error(`sendMail timed out after ${ms}ms`)),
-          ms,
-        ),
-      ),
-    ]);
-
   try {
-    await sendWithTimeout({
+    await transporter.sendMail({
       from: `"CXO Orbit Global" <${process.env.SMTP_USER}>`,
       to,
       subject,
       html,
     });
 
-    await safeLog({
+    await EmailLog.create({
       id: logId,
       recipientEmail: to,
       subject,
@@ -100,12 +45,7 @@ const sendEmail = async ({
 
     return { success: true };
   } catch (err) {
-    console.error(
-      `❌ sendEmail failed [${templateType}] to ${to}:`,
-      err.message,
-    );
-
-    await safeLog({
+    await EmailLog.create({
       id: logId,
       recipientEmail: to,
       subject,
@@ -115,7 +55,6 @@ const sendEmail = async ({
       errorMessage: err.message,
       relatedId,
     });
-
     throw err;
   }
 };
@@ -216,10 +155,8 @@ const sendInquiryAlert = (adminEmail, inquiryType, data) =>
       </div>`,
   });
 
-// ─── Exports ──────────────────────────────────────────────
 module.exports = {
   sendEmail,
-  verifyMailer,
   sendOTPEmail,
   sendEventInvite,
   sendRegistrationConfirmation,

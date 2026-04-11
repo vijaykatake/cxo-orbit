@@ -9,7 +9,6 @@ const fs = require("fs");
 const rateLimit = require("express-rate-limit");
 
 const sequelize = require("./src/config/database");
-const { verifyMailer } = require("./src/services/emailService"); // ✅ ADD THIS
 
 // ─── App Init ─────────────────────────────────────────────
 const app = express();
@@ -19,7 +18,7 @@ app.set("trust proxy", 1);
 
 // ─── Rate Limiter ─────────────────────────────────────────
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
+  windowMs: 15 * 60 * 1000, // 15 minutes
   max: 200,
   standardHeaders: true,
   legacyHeaders: false,
@@ -51,7 +50,7 @@ const newsRoutes = require("./src/routes/newsRoutes");
 // ─── Security Middleware ──────────────────────────────────
 app.use(
   helmet({
-    crossOriginResourcePolicy: false,
+    crossOriginResourcePolicy: false, // allow external images (Cloudinary etc.)
   }),
 );
 
@@ -73,10 +72,10 @@ app.use(morgan("dev"));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
-// ─── Rate Limiter ─────────────────────────────────────────
+// ─── Rate Limiter (after parsers) ─────────────────────────
 app.use(limiter);
 
-// ─── Static Uploads ───────────────────────────────────────
+// ─── Static Uploads (Legacy / Optional) ───────────────────
 const uploadDir = path.join(__dirname, "uploads/NewImgUpload");
 
 if (!fs.existsSync(uploadDir)) {
@@ -126,6 +125,7 @@ app.use((req, res) => {
 // ─── Global Error Handler ─────────────────────────────────
 app.use((err, req, res, next) => {
   console.error("🔥 ERROR:", err.stack);
+
   res.status(err.status || 500).json({
     success: false,
     message: err.message || "Internal Server Error",
@@ -139,14 +139,9 @@ sequelize
   .authenticate()
   .then(() => {
     console.log("✅ MySQL connected");
-    return sequelize.sync({ alter: false });
+    return sequelize.sync({ alter: false }); // use migrations in production
   })
   .then(() => {
-    // ✅ Verify SMTP on startup — non-blocking, won't crash server
-    verifyMailer()
-      .then(() => console.log("✅ SMTP ready"))
-      .catch((err) => console.error("⚠️ SMTP not ready:", err.message));
-
     app.listen(PORT, () => {
       console.log(`🚀 Server running at ${SERVER_URL}`);
     });
