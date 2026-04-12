@@ -2,7 +2,6 @@ const router = require("express").Router();
 const { v4: uuidv4 } = require("uuid");
 const sequelize = require("../config/database");
 const { DataTypes } = require("sequelize");
-const { sendInquiryAlert } = require("../services/emailService");
 const { authenticate, adminOnly } = require("../middleware/authMiddleware");
 const partnerController = require("../controllers/partnerController");
 // Inline model for Partner (similar to Sponsor)

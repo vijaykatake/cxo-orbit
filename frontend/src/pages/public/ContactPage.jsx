@@ -52,21 +52,35 @@ export default function PartnersPage() {
     try {
       setLoading(true);
 
-      await api.post("/email/contact", form);
+      const res = await api.post("/contact", form);
 
-      alert("Message sent successfully!");
+      // ✅ Check backend response
+      if (res?.data?.success) {
+        alert("Message sent successfully!");
 
-      setForm({
-        name: "",
-        email: "",
-        mobile: "",
-        subject: "",
-        message: "",
-      });
+        setForm({
+          name: "",
+          email: "",
+          mobile: "",
+          subject: "",
+          message: "",
+        });
 
-      setErrors({});
+        setErrors({});
+      } else {
+        alert(res?.data?.message || "Failed to send message");
+      }
     } catch (err) {
-      alert("Failed to send message");
+      console.error("Contact error:", err);
+
+      // ✅ Better error handling
+      if (err.response) {
+        alert(err.response.data?.message || "Server error occurred");
+      } else if (err.request) {
+        alert("No response from server. Please try again.");
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
     } finally {
       setLoading(false);
     }

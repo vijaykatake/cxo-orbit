@@ -1,7 +1,6 @@
 const bcrypt = require("bcryptjs");
 const { v4: uuidv4 } = require("uuid");
 const User = require("../models/User");
-const { sendEmail } = require("../services/emailService");
 
 // ─── Get All Users ────────────────────────────────────────
 const getAllUsers = async (req, res) => {

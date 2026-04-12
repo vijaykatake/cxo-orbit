@@ -1,54 +1,73 @@
-const emailService = require("../services/emailService");
+const db = require("../models");
 
-exports.contactForm = async (req, res) => {
+const ContactForm = db.ContactForm;
+const EmailLog = db.EmailLog;
+console.log("ContactForm:", ContactForm);
+const { sendEmail } = require("../services/email.service");
+const {
+  adminTemplate,
+  userTemplate,
+} = require("../templates/contact.template");
+
+exports.submitContact = async (req, res) => {
+  const data = req.body;
+
   try {
-    const { name, email, mobile, subject, message } = req.body;
+    // ✅ 1. Save Contact Form
+    const contact = await ContactForm.create({
+      name: data.name,
+      email: data.email,
+      mobile: data.mobile,
+      subject: data.subject,
+      message: data.message,
+      closed: 0,
+    });
 
-    console.log("CONTACT FORM DATA:", req.body);
+    // ✅ 2. Send Admin Email
+    const adminRes = await sendEmail({
+      to: process.env.ADMIN_EMAIL,
+      subject: `New Contact - ${data.name}`,
+      htmlContent: adminTemplate(data),
+    });
 
-    // ✅ Immediate response (fast UX)
-    res.status(200).json({
+    // ✅ 3. Log Admin Email
+    await EmailLog.create({
+      recipientEmail: process.env.ADMIN_EMAIL,
+      subject: `New Contact - ${data.name}`,
+      templateType: "CONTACT_ADMIN",
+      body: JSON.stringify(data),
+      status: adminRes.success ? "sent" : "failed",
+      errorMessage: adminRes.success ? null : "Failed",
+      sentAt: new Date(),
+      relatedId: contact.id,
+    });
+
+    // ✅ 4. Send User Email
+    const userRes = await sendEmail({
+      to: data.email,
+      subject: "We received your message",
+      htmlContent: userTemplate(data),
+    });
+
+    // ✅ 5. Log User Email
+    await EmailLog.create({
+      recipientEmail: data.email,
+      subject: "We received your message",
+      templateType: "CONTACT_USER",
+      body: JSON.stringify(data),
+      status: userRes.success ? "sent" : "failed",
+      errorMessage: userRes.success ? null : "Failed",
+      sentAt: new Date(),
+      relatedId: contact.id,
+    });
+
+    return res.status(200).json({
       success: true,
-      message: "Your message has been received",
+      message: "Contact saved & email sent",
+      id: contact.id,
     });
-
-    // ✅ Send email (non-blocking like partnerController)
-    setImmediate(async () => {
-      try {
-        // 🔹 Email to Admin
-        await emailService.sendEmail({
-          to: process.env.EMAIL_FROM,
-          subject: `CXO ORBIT : New Contact Inquiry: ${subject}`,
-          html: `
-            <h3>New Contact Form Submission</h3>
-            <p><b>Name:</b> ${name}</p>
-            <p><b>Email:</b> ${email}</p>
-            <p><b>Mobile:</b> ${mobile}</p>
-            <p><b>Subject:</b> ${subject}</p>
-            <p><b>Message:</b><br/> ${message}</p>
-          `,
-        });
-
-        // 🔹 Auto-reply to user (optional but recommended)
-        await emailService.sendEmail({
-          to: email,
-          subject: "Thank you for contacting CXO Orbit Global",
-          html: `
-            <p>Dear ${name},</p>
-            <p>Thank you for reaching out to CXO Orbit Global.</p>
-            <p>Our team will review your message and get back to you shortly.</p>
-            <br/>
-            <p>Warm regards,<br/>Team CXO Orbit Global</p>
-          `,
-        });
-
-        console.log("✅ Contact emails sent");
-      } catch (err) {
-        console.error("❌ Contact email failed:", err.message);
-      }
-    });
-  } catch (error) {
-    console.error("Contact Form Error:", error);
+  } catch (err) {
+    console.error("❌ Contact error:", err);
 
     return res.status(500).json({
       success: false,

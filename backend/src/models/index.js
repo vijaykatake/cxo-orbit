@@ -7,6 +7,8 @@ const db = {};
 db.News = require("./News")(sequelize, DataTypes);
 db.NewsGallery = require("./NewsGallery")(sequelize, DataTypes);
 db.PartnerInquiry = require("./PartnerInquiry")(sequelize, DataTypes);
+db.ContactForm = require("./ContactForm")(sequelize, DataTypes);
+db.EmailLog = require("./EmailLog")(sequelize, DataTypes);
 // (optional: add your existing models here later)
 // db.Event = require("./Event")(sequelize, DataTypes);
 // db.User = require("./User")(sequelize, DataTypes);

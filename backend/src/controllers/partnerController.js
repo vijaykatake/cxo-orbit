@@ -1,5 +1,4 @@
 const { PartnerInquiry } = require("../models");
-const emailService = require("../services/emailService");
 
 exports.registerPartner = async (req, res) => {
   try {

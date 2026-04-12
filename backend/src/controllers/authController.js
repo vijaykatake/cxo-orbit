@@ -2,8 +2,6 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 const MemberProfile = require("../models/MemberProfile");
-const { sendOTPEmail } = require("../services/emailService");
-const emailService = require("../services/emailService");
 // Generate 6-digit OTP
 const generateOTP = () =>
   Math.floor(100000 + Math.random() * 900000).toString();
@@ -109,7 +107,7 @@ const requestOTP = async (req, res) => {
       otpExpiresAt: expires,
     });
 
-    await sendOTPEmail(email, otp, user.firstName);
+    // await sendOTPEmail(email, otp, user.firstName);
 
     res.json({
       success: true,
