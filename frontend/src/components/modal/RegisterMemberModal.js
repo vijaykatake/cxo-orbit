@@ -10,26 +10,44 @@ export default function RegisterMemberModal({ open, setOpen }) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // const [form, setForm] = useState({
+  //   firstName: "Vijay",
+  //   lastName: "Katake",
+  //   organization: "Freelancer",
+  //   industry: "Information Technology",
+  //   designation: "Sr. Architecture",
+  //   department: "Fullstack Developement",
+  //   personalEmail: "vijukatake@gmail.com",
+  //   officialEmail: "vijay.katake@outlook.com",
+  //   mobile: "9604781258",
+  //   experience: "21 Yrs.",
+  //   gender: "male",
+  //   countryCode: "IN", // ✅ ISO code for library lookup
+  //   stateCode: "MH", // ✅ ISO code for library lookup
+  //   city: "Pune",
+  //   linkedIn: "linkedin.com/in/vksrsoftwareengineer",
+  //   password: "Vijay@123",
+  //   confirmPassword: "Vijay@123",
+  // });
   const [form, setForm] = useState({
-    firstName: "Vijay",
-    lastName: "Katake",
-    organization: "Freelancer",
-    industry: "Information Technology",
-    designation: "Sr. Architecture",
-    department: "Fullstack Developement",
-    personalEmail: "vijukatake@gmail.com",
-    officialEmail: "vijay.katake@outlook.com",
-    mobile: "9604781258",
-    experience: "21 Yrs.",
-    gender: "male",
-    countryCode: "IN", // ✅ ISO code for library lookup
-    stateCode: "MH", // ✅ ISO code for library lookup
-    city: "Pune",
-    linkedIn: "linkedin.com/in/vksrsoftwareengineer",
-    password: "Vijay@123",
-    confirmPassword: "Vijay@123",
+    firstName: "",
+    lastName: "",
+    organization: "",
+    industry: "",
+    designation: "",
+    department: "",
+    personalEmail: "",
+    officialEmail: "",
+    mobile: "",
+    experience: ".",
+    gender: "",
+    countryCode: "", // ✅ ISO code for library lookup
+    stateCode: "", // ✅ ISO code for library lookup
+    city: "",
+    linkedIn: "",
+    password: "",
+    confirmPassword: "",
   });
-
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [birthDate, setBirthDate] = useState(null);
