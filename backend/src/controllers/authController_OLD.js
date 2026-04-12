@@ -353,61 +353,62 @@ const registerMember = async (req, res) => {
     console.log("🔍 Step 7: Queuing welcome email to:", personalEmail);
     setImmediate(async () => {
       try {
-        // =========================
-        // STEP 7 — EMAIL FLOW
-        // =========================
-
-        console.log("📧 Sending emails...");
-
-        // 1. ADMIN EMAIL
-        const adminRes = await sendEmail({
-          to: process.env.ADMIN_EMAIL,
-          subject: `New CXO Member - ${firstName} ${lastName}`,
-          htmlContent: adminTemplate({
-            firstName,
-            lastName,
-            personalEmail,
-            mobile,
-            organization,
-            designation,
-            industry,
-          }),
-        });
-
-        // LOG ADMIN EMAIL
-        await EmailLog.create({
-          recipientEmail: process.env.ADMIN_EMAIL,
-          subject: `New CXO Member - ${firstName} ${lastName}`,
-          templateType: "MEMBER_ADMIN",
-          body: JSON.stringify(req.body),
-          status: adminRes.success ? "sent" : "failed",
-          sentAt: new Date(),
-          relatedId: user.id,
-        });
-
-        // 2. USER EMAIL
-        const userRes = await sendEmail({
+        await emailService.sendEmail({
           to: personalEmail,
-          subject: "Welcome to CXO Orbit Global",
-          htmlContent: userTemplate({
-            firstName,
-            lastName,
-            organization,
-          }),
-        });
+          subject: "Welcome to CXO Orbit Global Community 🚀",
+          html: `
+            <div style="font-family: Arial, sans-serif; line-height:1.6; color:#333;">
+              <p>Dear ${firstName} ${lastName},</p>
+              <p>We are absolutely delighted to officially welcome you to the <strong>CXO Orbit Global Community</strong>!</p>
+              <p>Your enthusiasm and leadership mindset are what make this ecosystem powerful, and we're excited to have you onboard.</p>
 
-        // LOG USER EMAIL
-        await EmailLog.create({
-          recipientEmail: personalEmail,
-          subject: "Welcome to CXO Orbit Global",
-          templateType: "MEMBER_USER",
-          body: JSON.stringify(req.body),
-          status: userRes.success ? "sent" : "failed",
-          sentAt: new Date(),
-          relatedId: user.id,
-        });
+              <h3 style="color:#0B2C4D;">How CXO Orbit Elevates You</h3>
+              <h4>1. Networking & Knowledge</h4>
+              <ul>
+                <li>Be part of a trusted, vendor-free network of CXOs</li>
+                <li>Connect with industry leaders and peers</li>
+                <li>Exclusive roundtables & leadership events</li>
+                <li>Collaboration & consulting opportunities</li>
+              </ul>
+              <h4>2. Personal Growth & Branding</h4>
+              <ul>
+                <li>Speaking opportunities & panel discussions</li>
+                <li>Support for LinkedIn branding & storytelling</li>
+                <li>Access to curated insights & reports</li>
+              </ul>
+              <h4>3. Giving Back & Influence</h4>
+              <ul>
+                <li>Mentor emerging leaders</li>
+                <li>Co-create playbooks & thought leadership</li>
+                <li>Lead impactful discussions</li>
+              </ul>
 
-        console.log("✅ Emails processed");
+              <h3 style="color:#0B2C4D;">Member Privileges</h3>
+              <ul>
+                <li>Travel & stay benefits (Flights & Hotels)</li>
+                <li>Premium lifestyle & brand collaborations</li>
+                <li>Education & wellness offers</li>
+                <li>Custom LinkedIn content support</li>
+              </ul>
+
+              <p>As a token of appreciation, a welcome gift will be shared with you shortly.</p>
+              <p><strong>Registered Organization:</strong> ${organization || "N/A"}</p>
+              <p>Join our community on LinkedIn:<br/>
+                <a href="https://www.linkedin.com/groups/15057005/" target="_blank">CXO Orbit Community</a>
+              </p>
+              <br/>
+              <p>Once again, welcome to CXO Orbit — where leadership meets influence.</p>
+              <div style="margin-top:20px; font-size:14px;">
+                <p><strong>Thanks & Regards,</strong></p>
+                <p style="margin:0;"><strong>Mansi Borkhetaria</strong></p>
+                <p style="margin:0;">Asst. Manager - Community</p>
+                <p style="margin:0;">📞 +91-9619273892</p>
+                <p style="margin:0;">🌐 www.kestoneglobal.com</p>
+                <p style="margin:0;">📍 Mumbai, India</p>
+              </div>
+            </div>
+          `,
+        });
         console.log("✅ Welcome email sent to:", personalEmail);
       } catch (err) {
         console.error("❌ Welcome email failed:", err.message);
