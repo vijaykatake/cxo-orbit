@@ -32,10 +32,10 @@ export default function MemberLoginPage() {
 
     try {
       setLoading(true);
-
-      const res = await api.post("/auth/member-login", form);
-
-      login(res.data.token, res.data.user);
+      alert("Will Comming Soon ...");
+      // const res = await api.post("/auth/member-login", form);
+      // console.log("LOGIN RESPONSE:", res.data); // ✅ ADD THIS
+      // login(res.data.token, res.data.user);
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
     } finally {
