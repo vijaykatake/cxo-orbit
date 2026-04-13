@@ -8,7 +8,6 @@ import Subodh from "../../assets/advisory/Rahul.jpeg";
 import PrasadT from "../../assets/advisory/PrasadT.jpeg";
 import Purvi from "../../assets/advisory/Purvi.jpeg";
 import Neha from "../../assets/advisory/Neha.jpeg";
-import Gourav from "../../assets/advisory/Gourav.jpeg";
 export default function AboutPage() {
   const teamMembers = [
     {
@@ -117,12 +116,6 @@ His skills and experience cover technology strategy, artificial intelligence, cy
 •	Leadership Vision: I lead with the belief that technology transformation succeeds when innovation, process discipline, and people empowerment move in harmony.`,
     },
     {
-      name: "Gaurav Mishra",
-      image: Gourav,
-      role: "Bengaluru",
-      desc: "CTO",
-    },
-    {
       name: "Sangeeta Kant",
       image: null,
       role: "Singapur",
@@ -133,6 +126,12 @@ His skills and experience cover technology strategy, artificial intelligence, cy
       image: null,
       role: "Dubai",
       desc: "Expert in enterprise operations and scaling organizations.",
+    },
+    {
+      name: "Gaurav Mishra",
+      image: null,
+      role: "Bengaluru",
+      desc: "CTO",
     },
   ];
 

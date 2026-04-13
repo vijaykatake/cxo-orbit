@@ -13,6 +13,7 @@ const navLinks = [
   { to: "/sponsors", label: "Partners" },
   // { to: "/insights", label: "Insights" },
   { to: "/contact", label: "Contact" },
+  // { to: "/latest-news", label: "Latest News" },
 ];
 
 export default function Header() {

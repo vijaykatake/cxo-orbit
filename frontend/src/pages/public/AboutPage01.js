@@ -115,7 +115,7 @@ export default function AboutPage() {
   );
 
   return (
-    <div className="section">
+    <div className="section pt-0 pb-2">
       <div className="container-main">
         {/* TITLE */}
         <div className="text-center mb-2">
@@ -665,8 +665,8 @@ export default function AboutPage() {
           </p>
         </section>
         {/* =========================
-    TESTIMONIAL CARDS
-========================= */}
+          TESTIMONIAL CARDS
+        ========================= */}
         <section className="max-w-8xl mx-auto mb-6 px-4">
           <div className="grid md:grid-cols-3 gap-4">
             {/* 1 */}
@@ -769,9 +769,12 @@ export default function AboutPage() {
                 className="w-full max-h-64 object-contain mb-4"
               />
 
-              <h3 className="text-2xl font-bold text-[#0B2C4D] mb-2">
-                {selectedMember.name}
-              </h3>
+              <div className="text-center mb-4 pb-0">
+                <h2 className="text-3xl font-bold text-[#0B2C4D]">
+                  {selectedMember.name}
+                </h2>
+                <div className="w-24 h-[2px] bg-[#D4AF37] mx-auto mt-2"></div>
+              </div>
 
               <p className="text-gray-700 text-sm leading-relaxed text-justify">
                 {selectedMember.desc}

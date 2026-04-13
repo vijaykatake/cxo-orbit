@@ -15,6 +15,7 @@ import AdvisoryBoardPage from "./pages/public/AdvisoryBoardPage";
 import SponsorsPage from "./pages/public/SponsorsPage";
 import ContactPage from "./pages/public/ContactPage";
 import PartnerWithUsPage from "./pages/public/PartnerWithUsPage";
+import LatestNewsPage from "./pages/public/LatestNewsPage";
 // Portal Pages
 import MemberLoginPage from "./pages/portal/MemberLoginPage";
 // Admin Pages
@@ -137,6 +138,7 @@ function AppRoutes() {
         }
       />
       <Route path="/partner-with-us" element={<PartnerWithUsPage />} />
+      <Route path="/latest-news" element={<LatestNewsPage />} />
       <Route
         path="/insights"
         element={

@@ -1,4 +1,8 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import PrivacyPolicyModal from "../modal/PrivacyPolicyModal";
+import TermsModal from "../modal/TermsModal";
+
 import {
   FaLinkedinIn,
   FaWhatsapp,
@@ -6,6 +10,8 @@ import {
   FaInstagram,
 } from "react-icons/fa";
 export default function Footer() {
+  const [openPrivacy, setOpenPrivacy] = useState(false);
+  const [openTerms, setOpenTerms] = useState(false);
   return (
     <footer className="bg-royal-blue text-white mt-16">
       <div className="max-w-7xl mx-auto px-4 py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -91,23 +97,19 @@ export default function Footer() {
           <p className="text-center md:text-left text-white text-xs">
             Copyright © 2026 Cxo Orbit Global. All rights reserved.
             &nbsp;|&nbsp;
-            <Link
-              to="/privacy"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={() => setOpenPrivacy(true)}
               className="hover:text-soft-gold"
             >
               Privacy Policy
-            </Link>
+            </button>
             &nbsp;|&nbsp;
-            <Link
-              to="/terms"
-              target="_blank"
-              rel="noopener noreferrer"
+            <button
+              onClick={() => setOpenTerms(true)}
               className="hover:text-soft-gold"
             >
               Terms of Use
-            </Link>
+            </button>
           </p>
 
           {/* RIGHT SOCIAL ICONS (LIKE IMAGE) */}
@@ -139,6 +141,8 @@ export default function Footer() {
           </div>
         </div>
       </div>
+      <PrivacyPolicyModal open={openPrivacy} setOpen={setOpenPrivacy} />
+      <TermsModal open={openTerms} setOpen={setOpenTerms} />
     </footer>
   );
 }

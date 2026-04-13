@@ -3,8 +3,8 @@ import api from "../../api";
 import NewsCard from "./NewsCard";
 import GalleryModal from "./GalleryModal";
 
-export default function LatestNews() {
-  const [news, setNews] = useState([]); // ✅ single state
+export default function LatestNews({ hideTitle = false, limit }) {
+  const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [selectedGallery, setSelectedGallery] = useState([]);
@@ -14,9 +14,6 @@ export default function LatestNews() {
     api
       .get("/home/news")
       .then((res) => {
-        console.log("HOME NEWS:", res.data);
-
-        // ✅ FIX: SET STATE
         setNews(res.data.news || []);
       })
       .catch((err) => {
@@ -36,7 +33,7 @@ export default function LatestNews() {
     setSelectedGallery([]);
   };
 
-  // 🔥 Loader
+  // Loader
   if (loading) {
     return (
       <div className="py-20 text-center text-gray-500 animate-pulse">
@@ -45,18 +42,23 @@ export default function LatestNews() {
     );
   }
 
+  // Limit support (for homepage)
+  const displayNews = limit ? news.slice(0, limit) : news;
+
   return (
     <div className="w-full px-[2%] py-6">
       {/* TITLE */}
-      <div className="text-center mb-6">
-        <h2 className="text-3xl font-bold text-[#0B2C4D]">Latest News</h2>
-        <div className="w-24 h-[2px] bg-[#D4AF37] mx-auto mt-2"></div>
-      </div>
+      {!hideTitle && (
+        <div className="text-center mb-6">
+          <h2 className="text-3xl font-bold text-[#0B2C4D]">Latest News</h2>
+          <div className="w-24 h-[2px] bg-[#D4AF37] mx-auto mt-2"></div>
+        </div>
+      )}
 
       {/* NEWS GRID */}
-      {news.length > 0 ? (
+      {displayNews.length > 0 ? (
         <div className="grid md:grid-cols-4 gap-6">
-          {news.map((item) => (
+          {displayNews.map((item) => (
             <NewsCard
               key={item.id}
               news={item}

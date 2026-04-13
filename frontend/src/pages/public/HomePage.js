@@ -15,6 +15,7 @@ import Upcomming07 from "../../assets/Tables/Upcomming/WareFare.png";
 import Upcomming08 from "../../assets/Tables/Upcomming/Balancing.jpg";
 import PartnerRegistrationModal from "../../components/modal/PartnerRegistrationModal";
 import RegisterMemberModal from "../../components/modal/RegisterMemberModal";
+import SponsorsScroller from "../../components/home/SponsorsScroller";
 export default function HomePage() {
   const [openPartnerModal, setOpenPartnerModal] = useState(false);
   const [openRegisterModal, setOpenRegisterModal] = useState(false);
@@ -109,7 +110,7 @@ export default function HomePage() {
       <section className="bg-royal-blue text-white min-h-[28vh] flex items-center px-4 py-4">
         <div className="max-w-4xl mx-auto text-center">
           <p className="text-soft-gold font-semibold tracking-widest text-xs uppercase mb-2">
-            Invite-Only • Executive Excellence
+            • Executive Excellence
           </p>
 
           <h1 className="text-3xl md:text-4xl font-bold leading-snug mb-3">
@@ -146,58 +147,88 @@ export default function HomePage() {
         <LatestNews />
       </div> */}
       {/* =========================    EXECUTIVE PLATFORM SECTION ========================= */}
-      <section className="max-w-4xl mx-auto text-center mb-4 px-4">
-        {/* TITLE (same as Advisory / About style) */}
+
+      {/* TITLE */}
+      <div className="text-center mb-2">
         <div className="text-center mb-2">
           <h2 className="text-3xl font-bold text-[#0B2C4D]">
-            MISSION & VISION
+            About CXO Orbit Global
           </h2>
           <div className="w-24 h-[2px] bg-[#D4AF37] mx-auto mt-2"></div>
         </div>
-
-        {/* SUBTITLE (same as About subtitle style) */}
         <p className="section-subtitle mb-1">
-          Grounded in purpose. Driven by leadership.
+          CXO Orbit Global is a premium executive engagement platform built for
+          the leaders
         </p>
+      </div>
 
-        {/* DESCRIPTION (same as Driving paragraph style) */}
+      {/* DESCRIPTION (TIGHT + CENTER + STYLED) */}
+      <section className="max-w-4xl mx-auto text-center mb-2 px-4">
         <p className="text-[#0B2C4D] text-[18px] leading-7 text-center">
-          <span className="font-semibold">CXO Orbit Global</span> was founded on
-          a singular conviction: that the most consequential decisions in
-          enterprise technology and business leadership are best made within a
-          trusted peer ecosystem — not in isolation.
+          <span className="font-semibold">Driving</span> the future of
+          enterprise technology and business. We bring together the world's most
+          forward-thinking{" "}
+          <span className="text-[#0B2C4D] font-bold">CIOs, CISOs, CTOs</span>,
+          and senior business leaders in trusted environments designed for real
+          dialogue and strategic impact.
         </p>
       </section>
-      {/* ========================= MISSION INTRO + CARDS ========================= */}
-      <section className="max-w-6xl mx-auto mb-6 px-4">
-        {/* CARDS */}
-        <div className="grid md:grid-cols-2 gap-4">
-          {/* OUR MISSION */}
-          <div className="bg-white border rounded-xl p-5 shadow-sm hover:shadow-md transition">
-            <h3 className="font-semibold text-[rgb(31_166_160)] text-center py-2">
-              OUR MISSION
-            </h3>
-            <p className="text-gray-600 text-[16px] leading-6 font-semibold text-justified text-left mt-1 text-center">
-              To connect, empower, and enable CXO leaders across industries and
-              geographies by providing a premium platform for strategic
-              collaboration, peer exchange, and executive development.
-            </p>
+      {/* FEATURE CARDS */}
+      <section className="max-w-8xl mx-auto mb-4 px-4">
+        <div className="grid md:grid-cols-3 gap-1">
+          <div className="bg-white border rounded-xl p-5 shadow-sm">
+            <div className="flex gap-3">
+              <div className="bg-blue-100 text-blue-600 p-2 rounded-lg">
+                <i className="fa-solid fa-users"></i>
+              </div>
+              <div>
+                <h3 className="font-semibold text-[rgb(31_166_160)]">
+                  Curated peer connections
+                </h3>
+                <p className="text-gray-600 text-[16px] leading-6 font-semibold text-justified text-left mt-1">
+                  High-value relationships with peers who understand your
+                  challenges - across industries and geographies.
+                </p>
+              </div>
+            </div>
           </div>
 
-          {/* OUR VISION */}
-          <div className="bg-white border rounded-xl p-5 shadow-sm hover:shadow-md transition">
-            <h3 className="font-semibold text-[rgb(31_166_160)] text-center py-2">
-              OUR VISION
-            </h3>
-            <p className="text-gray-600 text-[16px] leading-6 font-semibold text-justified text-left mt-1 text-center">
-              To be the world's most trusted executive ecosystem — where global
-              C-suite leaders convene to exchange insight, forge strategic
-              alliances, and collectively shape the future of enterprise
-              technology and leadership.
-            </p>
+          <div className="bg-white border rounded-xl p-5 shadow-sm">
+            <div className="flex gap-3">
+              <div className="bg-green-100 text-green-600 p-2 rounded-lg">
+                <i className="fa-regular fa-comment"></i>
+              </div>
+              <div>
+                <h3 className="font-semibold text-[rgb(31_166_160)]">
+                  Strategic dialogue
+                </h3>
+                <p className="text-gray-600 text-[16px] leading-6 font-semibold text-justified text-left mt-1">
+                  Roundtables, leadership forums, and executive conferences
+                  designed for candid, insight- driven conversations.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white border rounded-xl p-5 shadow-sm">
+            <div className="flex gap-3">
+              <div className="bg-purple-100 text-purple-600 p-2 rounded-lg">
+                <i className="fa-solid fa-wave-square"></i>
+              </div>
+              <div>
+                <h3 className="font-semibold text-[rgb(31_166_160)]">
+                  Lasting partnerships
+                </h3>
+                <p className="text-gray-600 text-[16px] leading-6 font-semibold text-justified text-left mt-1">
+                  A trusted ecosystem that fosters long-term strategic
+                  partnerships - not just one-time networking moments.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
+
       {/* =========================    What We Offer ========================= */}
       <section className="max-w-4xl mx-auto text-center mb-4 px-4">
         {/* TITLE (same as Advisory / About style) */}
@@ -632,7 +663,7 @@ export default function HomePage() {
               {
                 icon: "🌐",
                 title: "Global Reach",
-                desc: "From Pune to global forums.",
+                desc: "Global forums.",
               },
               {
                 icon: "💡",
@@ -666,14 +697,19 @@ export default function HomePage() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <Link to="/contact" className="btn-primary px-6 py-2 text-sm">
+          <button
+            onClick={() => setOpenRegisterModal(true)}
+            className="btn-primary px-6 py-2 text-sm"
+          >
             Request Invitation
-          </Link>
+          </button>
 
           <Link to="/sponsors" className="btn-outline px-6 py-2 text-sm">
-            Sponsorship
+            Partners
           </Link>
         </div>
+        {/* ✅ SPONSORS SCROLLER */}
+        <SponsorsScroller />
       </section>
       <PartnerRegistrationModal
         isOpen={openPartnerModal}
