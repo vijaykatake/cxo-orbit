@@ -2,16 +2,24 @@ import { useState } from "react";
 import api from "../../api";
 
 export default function PartnerRegistrationModal({ isOpen, onClose }) {
+  // const [form, setForm] = useState({
+  //   name: "Vijay Katake",
+  //   organization_name: "Fullstack Freelance IT Professional",
+  //   designation: "Fullstack Developer",
+  //   email: "vijukatake@gmail.com",
+  //   mobile: "9604781258",
+  //   city: "Pune",
+  //   linkedin_consent: false,
+  // });
   const [form, setForm] = useState({
-    name: "Vijay Katake",
-    organization_name: "Fullstack Freelance IT Professional",
-    designation: "Fullstack Developer",
-    email: "vijukatake@gmail.com",
-    mobile: "9604781258",
-    city: "Pune",
+    name: "",
+    organization_name: "",
+    designation: "",
+    email: "",
+    mobile: "",
+    city: "",
     linkedin_consent: false,
   });
-
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState({});
