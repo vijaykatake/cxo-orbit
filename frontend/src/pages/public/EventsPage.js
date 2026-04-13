@@ -230,13 +230,13 @@ export default function EventsPage() {
         ))}
       </div>
       {/* =========================
-    UPCOMING EVENTS
+    Round Tables
 ========================= */}
       <div className="mb-16">
-        <h2 className="text-3xl font-bold text-center text-[#0B2C4D] mb-10">
-          Upcoming Events
-        </h2>
-
+        <div class="text-center mb-4">
+          <h2 class="text-3xl font-bold text-[#0B2C4D]">Round Tables</h2>
+          <div class="w-24 h-[2px] bg-[#D4AF37] mx-auto mt-2"></div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {upcomingEvents.map((ev, index) => (
             <div
@@ -292,12 +292,12 @@ export default function EventsPage() {
         </div>
       </div>
 
-      {/* ROUND TABLES */}
+      {/* Past Events */}
       <div className="mb-16">
-        <h2 className="text-3xl font-bold text-center text-[#0B2C4D] mb-10">
-          CXO Round Tables
-        </h2>
-
+        <div class="text-center mb-4">
+          <h2 class="text-3xl font-bold text-[#0B2C4D]">Past Events</h2>
+          <div class="w-24 h-[2px] bg-[#D4AF37] mx-auto mt-2"></div>
+        </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {roundTables.map((rt, index) => (
             <div
